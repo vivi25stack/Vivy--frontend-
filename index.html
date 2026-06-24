@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vivy Live Matrix</title>
+    <style>
+        body {
+            background-color: #0F172A;
+            color: #FFFFFF;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 16px;
+        }
+        .header {
+            padding: 12px 0;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 20px;
+        }
+        .host-card {
+            background: #1E293B;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .host-name { font-weight: bold; font-size: 1.1rem; }
+        .host-meta { color: #94A3B8; font-size: 0.85rem; margin-top: 4px; }
+        .status-online { color: #4ADE80; font-weight: bold; }
+        .call-btn {
+            background-color: #22C55E;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        /* Video Container that goes live during a call */
+        #video-container {
+            display: none;
+            width: 100%;
+            height: 300px;
+            background: #000;
+            margin-top: 20px;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>🎙️ Vivy Host Matrix</h2>
+    </div>
+
+    <div id="host-list">
+        <div class="host-card">
+            <div>
+                <div class="host-name">Precious (Alpha Agency)</div>
+                <div class="host-meta">250 coins/30s | Status: <span class="status-online">Online</span></div>
+            </div>
+            <button class="call-btn" onclick="startVivyCall('2', 'Precious')">Call</button>
+        </div>
+    </div>
+
+    <div id="video-container"></div>
+
+    <script src="https://resource.zegocloud.com/prebuilt/crypto-js.js"></script>
+    <script src="https://resource.zegocloud.com/prebuilt/zego-express-engine-webrtc-3.0.0.js"></script>
+
+    <script>
+        async function startVivyCall(hostId, hostName) {
+            const callerId = "5"; // Simulating your logged in user ID
+            alert("Connecting to Vivy Backend Engine...");
+
+            try {
+                // 1. Hit your live Render backend for verification
+                const res = await fetch("https://vivy-core-engine.onrender.com/api/calls/initiate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ callerId: callerId, hostId: hostId })
+                });
+
+                const data = await res.json();
+
+                if (res.status === 200) {
+                    alert("📞 Call Approved! Activating camera feeds...");
+                    
+                    // Show the video player on your phone screen
+                    document.getElementById('video-container').style.display = "block";
+
+                    // 2. Start the 30-second background financial deduction loop
+                    runBillingHeartbeat(data.sessionId);
+                } else {
+                    alert("Call Rejected: Insufficient coins in your wallet.");
+                }
+            } catch (err) {
+                alert("Server connection timeout.");
+            }
+        }
+
+        function runBillingHeartbeat(sessionId) {
+            setInterval(async () => {
+                try {
+                    const res = await fetch("https://vivy-core-engine.onrender.com/api/calls/heartbeat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ sessionId: sessionId })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.action === "TERMINATE_CALL") {
+                        alert("🚨 Out of coins! Call disconnected automatically.");
+                        location.reload(); // Instantly reloads page and cuts cameras
+                    }
+                } catch (e) { console.log("Heartbeat missed context sync link."); }
+            }, 30000); // 30-second cycles
+        }
+    </script>
+</body>
+  </html>
