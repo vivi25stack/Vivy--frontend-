@@ -3,81 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vivy Live Matrix</title>
+    <title>Vivy Ecosystem Suite</title>
     <style>
+        :root {
+            --bg-dark: #0F172A;
+            --bg-card: #1E293B;
+            --accent-green: #22C55E;
+            --accent-blue: #3B82F6;
+            --accent-purple: #A855F7;
+            --text-main: #FFFFFF;
+            --text-muted: #94A3B8;
+        }
         body {
-            background-color: #0F172A;
-            color: #FFFFFF;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
-            padding: 16px;
+            padding: 0;
+            padding-bottom: 80px; /* Space for support footer */
         }
-        .header {
-            padding: 12px 0;
+        /* Mobile Navigation Matrix */
+        .nav-tabs {
+            display: flex;
+            background: #020617;
+            overflow-x: auto;
             border-bottom: 1px solid #334155;
-            margin-bottom: 20px;
+            sticky: top;
+            top: 0;
+            z-index: 100;
         }
-        .host-card {
-            background: #1E293B;
+        .tab-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 14px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            color: var(--text-main);
+            border-bottom: 3px solid var(--accent-blue);
+            background: var(--bg-card);
+        }
+        .container { padding: 16px; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        
+        /* UI Components */
+        .card {
+            background: var(--bg-card);
             border-radius: 12px;
             padding: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            margin-bottom: 16px;
+            border: 1px solid #334155;
         }
-        .host-name { font-weight: bold; font-size: 1.1rem; }
-        .host-meta { color: #94A3B8; font-size: 0.85rem; margin-top: 4px; }
-        .status-online { color: #4ADE80; font-weight: bold; }
-        .call-btn {
-            background-color: #22C55E;
-            color: white;
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .metric { font-size: 1.5rem; font-weight: bold; margin-top: 5px; color: var(--accent-green); }
+        .btn {
+            width: 100%;
+            padding: 12px;
             border: none;
-            padding: 10px 20px;
             border-radius: 8px;
             font-weight: bold;
             font-size: 1rem;
+            color: white;
+            margin-top: 10px;
         }
+        .btn-green { background: var(--accent-green); }
+        .btn-blue { background: var(--accent-blue); }
+        
+        /* Form inputs for banking detail collection */
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #090D16;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: white;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 10px; }
+        
         #video-container {
             display: none;
             width: 100%;
-            height: 300px;
+            height: 260px;
             background: #000;
-            margin-top: 20px;
             border-radius: 12px;
             overflow: hidden;
+            margin-top: 12px;
         }
+        /* Footer Links Bar */
+        .footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #020617;
+            border-top: 1px solid #334155;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+            box-sizing: border-box;
+        }
+        .footer-bar a { color: var(--accent-blue); text-decoration: none; margin: 0 10px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2>🎙️ Vivy Host Matrix</h2>
+    <!-- Tab Engine Header Navigation -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchPanel('user-panel', this)">📱 User Info</button>
+        <button class="tab-btn" onclick="switchPanel('host-panel', this)">💃 Host Portal</button>
+        <button class="tab-btn" onclick="switchPanel('agency-panel', this)">🏢 Agency Hub</button>
+        <button class="tab-btn" onclick="switchPanel('admin-panel', this)">👑 Admin Room</button>
     </div>
 
-    <div id="host-list">
-        <div class="host-card">
-            <div>
-                <div class="host-name">Precious (Alpha Agency)</div>
-                <div class="host-meta">250 coins/30s | Status: <span class="status-online">Online</span></div>
+    <div class="container">
+
+        <!-- 1. USER PANEL -->
+        <div id="user-panel" class="panel active">
+            <div class="card">
+                <h3>👛 Your Wallet</h3>
+                <div class="grid-2">
+                    <div><span style="color:var(--text-muted)">Coins available</span><div class="metric">12,500</div></div>
+                    <div><button class="btn btn-blue" style="margin-top:5px; padding:8px;">+ Top Up</button></div>
+                </div>
             </div>
-            <button class="call-btn" onclick="startVivyCall('2', 'Precious')">Call</button>
+            
+            <h3>🔥 Live Available Hosts</h3>
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <strong>Precious (Alpha Agency)</strong>
+                        <div style="color:var(--text-muted); font-size:0.85rem;">250 coins / 30s</div>
+                    </div>
+                    <button class="btn btn-green" style="width:auto;" onclick="startVivyCall('2', 'Precious')">Call</button>
+                </div>
+                <div id="video-container"></div>
+            </div>
         </div>
+
+        <!-- 2. HOST PORTAL -->
+        <div id="host-panel" class="panel">
+            <div class="card">
+                <h3>🔄 Stream Status Selector</h3>
+                <label>Set your matching status:</label>
+                <select id="host-status">
+                    <option value="online">🟢 Live & Online</option>
+                    <option value="busy">🔴 In a Call</option>
+                    <option value="offline">⚫ Offline</option>
+                </select>
+                <div class="grid-2" style="margin-top:15px;">
+                    <div><span style="color:var(--text-muted)">Today's Earnings</span><div class="metric" style="color:var(--accent-purple)">4,800 Coins</div></div>
+                    <div><span style="color:var(--text-muted)">Minutes Talked</span><div class="metric">42 mins</div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🏦 Host Payment & Payout Profiles</h3>
+                <form onsubmit="alert('Payment profile saved successfully!'); return false;">
+                    <label>Payment Method Type</label>
+                    <select>
+                        <option>Bank Wire Transfer</option>
+                        <option>Crypto (USDT-TRC20)</option>
+                        <option>PayPal / Digital Wallet</option>
+                    </select>
+                    <label>Account Number / Wallet Public Address</label>
+                    <input type="text" placeholder="Enter bank info or crypto destination link" required>
+                    <label>Account Holder / Full Legal Name</label>
+                    <input type="text" placeholder="John Doe" required>
+                    <button class="btn btn-blue" type="submit">Save Financial Settlement Info</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 3. AGENCY HUB -->
+        <div id="agency-panel" class="panel">
+            <div class="card">
+                <h3>📊 Alpha Management Agency Overview</h3>
+                <div class="grid-2">
+                    <div><span style="color:var(--text-muted)">Managed Hosts</span><div class="metric" style="color:white;">14</div></div>
+                    <div><span style="color:var(--text-muted)">Agency Commission</span><div class="metric">20%</div></div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>💃 Assigned Host Performance Registry</h3>
+                <div style="font-size:0.9rem; border-bottom:1px solid #334155; padding:8px 0;">
+                    <strong>Precious:</strong> 9,200 Coins accumulated this week
+                </div>
+                <div style="font-size:0.9rem; padding:8px 0;">
+                    <strong>Blessing:</strong> 12,400 Coins accumulated this week
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. ADMIN COMMAND CENTER WITH PAYROLL LAYER -->
+        <div id="admin-panel" class="panel">
+            <div class="card" style="border-left: 4px solid var(--accent-purple);">
+                <h3>👑 Platform Core Financial Dashboard</h3>
+                <div class="grid-2">
+                    <div><span style="color:var(--text-muted)">Total System Coins</span><div class="metric">1,450,000</div></div>
+                    <div><span style="color:var(--text-muted)">Net Profit Margin</span><div class="metric" style="color:var(--accent-blue)">$4,120 USD</div></div>
+                </div>
+            </div>
+
+            <!-- Automated Payroll Module -->
+            <div class="card">
+                <h3>💰 Host & Agency Automated Payroll Ledger</h3>
+                <p style="font-size:0.8rem; color:var(--text-muted);">Calculates exchange rates based on your internal system variables ($1 USD per 1,000 Coins minted minus commission targets).</p>
+                
+                <table style="width:100%; font-size:0.85rem; border-collapse:collapse; margin-top:10px;">
+                    <tr style="border-bottom:1px solid #334155; text-align:left; color:var(--text-muted);">
+                        <th style="padding:8px 0;">Target</th>
+                        <th>Gross Coins</th>
+                        <th>Net Payout Due</th>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1E293B;">
+                        <td style="padding:8px 0;">Host: Precious</td>
+                        <td>9,200</td>
+                        <td style="color:var(--accent-green); font-weight:bold;">$9.20 USD</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #1E293B;">
+                        <td style="padding:8px 0;">Alpha Agency (20%)</td>
+                        <td>4,320</td>
+                        <td style="color:var(--accent-green); font-weight:bold;">$4.32 USD</td>
+                    </tr>
+                </table>
+                <button class="btn btn-blue" onclick="alert('Batch payroll payout file exported to server background queue!')">Execute Batch Payroll Outflow</button>
+            </div>
+        </div>
+
     </div>
 
-    <div id="video-container"></div>
+    <!-- STICKY CORPORATE LEGAL & SUPPORT FOOTER BAR -->
+    <div class="footer-bar">
+        <span>🔒 Security Node Protocol Active</span> | 
+        <a href="javascript:void(0)" onclick="alert('🚨 Support Contact Engine:\nFor immediate support, email backup support link: tech-support@vivyapp.internal.net or ping admin chat desk.')">💬 Contact Support</a> | 
+        <a href="javascript:void(0)" onclick="alert('📄 Vivy Operations Agreement:\n1. All chat interactions must abide by zero-harassment policies.\n2. In-app platform tokens are subject to developer terms and cannot be counterfeited.\n3. Content creators retain designated agency commission splits.')">📄 Legal Platform Policy</a>
+    </div>
 
-    <!-- Your Exact Selected ZEGOCLOUD Web Stream Drivers -->
+    <!-- ZEGOCLOUD Web Stream Drivers Framework -->
     <script src="https://resource.zegocloud.com/prebuilt/crypto-js.js"></script>
     <script src="https://resource.zegocloud.com/prebuilt/zego-express-engine-webrtc-3.0.0.js"></script>
 
     <script>
-        // YOUR LOCKED CREDENTIALS
+        // CLIENT CREDENTIAL MATRIX SETUP
         const appID = 148031151; 
         const serverSecret = "a895e016159f3a88c3d94d61f37b7ff15d1de5618a236aaeb22d41e671009e36"; 
-        
-        // This links the engine directly to your app's cloud socket network
         const serverURL = "wss://webliveroom148031151-api.zegocloud.com/ws"; 
+
+        // Dashboard Tab Switcher Engine
+        function switchPanel(panelId, element) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+            element.classList.add('active');
+        }
 
         async function startVivyCall(hostId, hostName) {
             const callerId = "5"; 
@@ -86,7 +274,6 @@
             alert("Connecting to Vivy Backend Engine...");
 
             try {
-                // 1. Hit your live Render backend for wallet check
                 const res = await fetch("https://vivy-core-engine.onrender.com/api/calls/initiate", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -99,31 +286,23 @@
                     const videoContainer = document.getElementById('video-container');
                     videoContainer.style.display = "block";
 
-                    // 2. Fire up the ZegoExpressEngine class from your script link
                     const zg = new ZegoExpressEngine(appID, serverURL);
-                    
-                    // Log directly into the video channel using the serverSecret validation
                     await zg.loginRoom(roomID, serverSecret, { userID: callerId, userName: "User_" + callerId }, { userUpdate: true });
 
-                    // Tap phone hardware cameras
                     const localStream = await zg.createStream({ camera: { video: true, audio: true } });
                     
-                    // Create your native visual player element
                     const localVideo = document.createElement('video');
                     localVideo.srcObject = localStream;
                     localVideo.autoplay = true;
                     localVideo.muted = true;
-                    localVideo.playsInline = true; // Prevents mobile browsers from popping full screen native media players
+                    localVideo.playsInline = true;
                     localVideo.style.width = "100%";
                     localVideo.style.height = "100%";
                     localVideo.style.objectFit = "cover";
                     
                     videoContainer.appendChild(localVideo);
-
-                    // Start broadcasting live video over the stream channel
                     zg.startPublishingStream("stream_" + callerId, localStream);
 
-                    // 3. Keep the coin deduction billing loop running
                     runBillingHeartbeat(roomID);
                 } else {
                     alert("Call Rejected: Insufficient coins in your wallet.");
@@ -143,14 +322,13 @@
                         body: JSON.stringify({ sessionId: sessionId })
                     });
                     const data = await res.json();
-                    
                     if (data.action === "TERMINATE_CALL") {
                         alert("🚨 Out of coins! Call disconnected automatically.");
                         location.reload(); 
                     }
-                } catch (e) { console.log("Heartbeat balance tracking active."); }
+                } catch (e) { console.log("Heartbeat active."); }
             }, 30000); 
         }
     </script>
 </body>
-    </html>
+                        </html>
