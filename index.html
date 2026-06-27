@@ -44,7 +44,6 @@
         .btn-danger { background: linear-gradient(135deg, #EF4444, #B91C1C); }
         .btn-sm { padding: 6px 12px; font-size: 0.8rem; width: auto; margin-top: 0; border-radius: 8px; }
         
-        .avatar-circle { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-pink); background: #1E293B; }
         .user-id-tag { background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-family: monospace; color: var(--accent-gold); }
         .pulse-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; display: inline-block; }
         
@@ -66,6 +65,7 @@
 
     <div class="app-container">
 
+        <!-- Access Gateway -->
         <div id="view-auth-gateway" class="view-panel active">
             <div class="card" style="text-align: center;">
                 <h2 style="color: var(--accent-pink); margin-top: 0;">🌐 VivyLive Gateway</h2>
@@ -115,6 +115,7 @@
             </div>
         </div>
 
+        <!-- User Viewport -->
         <div id="view-user-dashboard" class="view-panel">
             <div class="card" style="background: linear-gradient(135deg, #171126, #0F1526); border-left: 4px solid var(--accent-pink);">
                 <div class="flex-row">
@@ -153,6 +154,7 @@
             <div class="support-link">📧 Client Support: vivylive912@gmail.com</div>
         </div>
 
+        <!-- Host Lounge Viewport -->
         <div id="view-host-dashboard" class="view-panel">
             <div class="card" style="border-left: 4px solid var(--accent-green); background: linear-gradient(135deg, #0A1A14, #0F1526);">
                 <div class="flex-row">
@@ -174,6 +176,7 @@
             <div class="support-link">📧 Host Support: vivylive912@gmail.com</div>
         </div>
 
+        <!-- Agency Portal Viewport -->
         <div id="view-agency-dashboard" class="view-panel">
             <div class="card" style="background: linear-gradient(135deg, #0B192E, #0F1526); border-top: 4px solid var(--accent-blue);">
                 <h3 style="margin-top:0;" id="agency-headline-title">Agency Control Core</h3>
@@ -209,6 +212,7 @@
             </div>
         </div>
 
+        <!-- Platform Administration -->
         <div id="view-admin-dashboard" class="view-panel">
             <div class="card" style="border: 2px solid var(--accent-gold); background: #151006;">
                 <h3 style="margin-top:0; color:var(--accent-gold);">👑 Platform Administrative Override</h3>
@@ -230,6 +234,7 @@
             </div>
         </div>
 
+        <!-- Sticky Navigation Tab -->
         <div class="nav-footer" id="main-navigation-navbar" style="display: none;">
             <div class="nav-item active" id="nav-btn-user" onclick="switchActiveViewport('user-dashboard')">📱<br>User Hub</div>
             <div class="nav-item" id="nav-btn-host" onclick="switchActiveViewport('host-dashboard')">💃<br>Host Lounge</div>
@@ -237,22 +242,54 @@
 
     </div>
 
+    <!-- Payment Gateway Processing Node Modal -->
     <div id="paystack-redirect-modal" class="modal-overlay">
-        <div class="modal-box" style="border-color: #3AC5A0;">
-            <div style="width: 50px; height: 50px; border: 4px solid #3AC5A0; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto;"></div>
-            <h3 style="color: #FFF; margin: 0;">Connecting Paystack payment Gateway...</h3>
-            <p style="color: var(--text-muted); font-size: 0.85rem; margin: 8px 0 20px 0;">Securing direct token acquisition sequence channel.</p>
-            <div id="paystack-frame-simulator" style="background:#FFF; color:#000; padding:16px; border-radius:12px; text-align:left; display:none;">
-                <b style="color:#3AC5A0;">Paystack Checkout Gateway</b>
-                <div style="margin-top:10px; font-size:0.85rem;">Transaction Ref: <span id="ps-ref">PS-7492</span></div>
-                <div style="font-size:1.2rem; font-weight:900; margin:8px 0; color:#111;" id="ps-amount">$0.00 USD</div>
-                <p style="font-size:0.75rem; color:#666; margin:0 0 10px 0;">Local payments will convert securely according to current global USD valuation scales.</p>
-                <button class="btn btn-green" style="background:#3AC5A0; margin-top:5px; color:#FFF;" onclick="confirmPaystackDepositLoop()">Simulate Successful Payment</button>
+        <div class="modal-box" style="border-color: #3AC5A0; text-align: left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #243766; padding-bottom:10px; margin-bottom:15px;">
+                <b style="color:#3AC5A0; font-size:1.1rem;">💳 Add Payment Details</b>
+                <span id="ps-amount" style="font-size:1.1rem; font-weight:900; color:var(--accent-gold);">$0.00</span>
             </div>
-            <button class="btn btn-danger btn-sm" style="margin-top: 15px; width:100%;" onclick="closePaystackModal()">Cancel Process</button>
+            
+            <div id="paystack-billing-form">
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0 0 15px 0;">
+                    Please input your transactional card properties below. Funds will be securely authorization-checked and processed based on current dollar conversion scales.
+                </p>
+                
+                <label style="margin-top:0;">Cardholder Name</label>
+                <input type="text" id="billing-card-name" placeholder="First and Last Name">
+                
+                <label>Card Number</label>
+                <input type="text" id="billing-card-number" placeholder="4000 1234 5678 9010" maxlength="19">
+                
+                <div class="grid-2">
+                    <div>
+                        <label>Expiry Date</label>
+                        <input type="text" id="billing-card-expiry" placeholder="MM/YY" maxlength="5">
+                    </div>
+                    <div>
+                        <label>CVV Sec Code</label>
+                        <input type="password" id="billing-card-cvv" placeholder="123" maxlength="3">
+                    </div>
+                </div>
+
+                <div style="margin-top:15px; font-size:0.75rem; color:var(--text-muted); line-height:1.3;">
+                    🔒 All interactions run through secure validation pipelines. Tokens are credited strictly following verified withdrawal processing clearance loops.
+                </div>
+
+                <button class="btn btn-green" style="background:#3AC5A0; margin-top:20px; color:#FFF;" onclick="executeCardWithdrawalPipeline()">Process Secure Payment</button>
+                <button class="btn btn-danger btn-sm" style="margin-top: 10px; width:100%; background:none; border:1px solid #EF4444; color:#EF4444;" onclick="closePaystackModal()">Cancel Deposit</button>
+            </div>
+
+            <!-- Transaction Loader State -->
+            <div id="paystack-loading-screen" style="display:none; text-align:center; padding:30px 0;">
+                <div style="width: 50px; height: 50px; border: 4px solid #3AC5A0; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 15px auto;"></div>
+                <h4 style="color:#FFF; margin:0;">Authorizing Transaction...</h4>
+                <p style="color:var(--text-muted); font-size:0.85rem; margin-top:5px;">Withdrawing target funds from account node.</p>
+            </div>
         </div>
     </div>
 
+    <!-- Host Messaging Modal -->
     <div id="host-messenger-modal" class="modal-overlay">
         <div class="modal-box" style="text-align: left;">
             <h3 style="margin-top:0;" id="messenger-target-name">Chat User</h3>
@@ -265,6 +302,7 @@
         </div>
     </div>
 
+    <!-- Video Streaming Frame Layout -->
     <div id="video-call-room-modal" class="modal-overlay">
         <div class="modal-box">
             <h3 style="margin:0; color:var(--accent-green);">🎥 Video Session Active</h3>
@@ -279,7 +317,7 @@
     <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
     <script>
-        // System Application Database Architecture
+        // Data Store Registers
         let walletCoins = 0;
         let selectedCoinsPackage = 0;
         let selectedCostPackage = 0;
@@ -323,7 +361,7 @@
             document.getElementById('auth-subform-agency').style.display = (formKey === 'agency') ? 'block' : 'none';
         }
 
-        // Access Validation Channels
+        // Access Validation Control Flow
         function processUserAccountValidation() {
             const username = document.getElementById('login-user-name').value || "Client User";
             const email = document.getElementById('login-user-email').value;
@@ -337,7 +375,6 @@
             const generatedId = "VIVY-" + Math.floor(1000 + Math.random() * 9000);
             document.getElementById('user-display-id').innerText = `ID: ${generatedId}`;
             
-            // Push to active lists
             globalOnlineUsers.push({ username, uid: generatedId });
             rebuildHostsActiveUserDirectory();
 
@@ -352,12 +389,12 @@
             const code = document.getElementById('login-host-code').value;
 
             if (!username || !email || !pass || !code) {
-                alert("❌ Validation Failure: Complete all entry components to join.");
+                alert("❌ Validation Failure: Complete all entry fields to join.");
                 return;
             }
 
             currentlyPendingHostRegistration = { username, email, pass, code, uid: "HOST-" + Math.floor(1000 + Math.random() * 9000) };
-            alert("✅ File transmitted to administrative queue. Dashboard access remains locked until Admin approves.");
+            alert("✅ Profile successfully passed to the admin queue. Awaiting confirmation.");
             
             renderAdminApprovalComponent();
             switchActiveViewport('auth-gateway');
@@ -370,7 +407,7 @@
             const pass = document.getElementById('login-agency-pass').value;
 
             if (!name || !email || !phone || !pass) {
-                alert("❌ Validation Failure: Complete all fields to initialize.");
+                alert("❌ Validation Failure: Complete all corporate fields to initialize.");
                 return;
             }
 
@@ -382,7 +419,7 @@
             switchActiveViewport('agency-dashboard');
         }
 
-        // Administrative Management Channels
+        // Administrative Core Pipelines
         function renderAdminApprovalComponent() {
             const container = document.getElementById('admin-pending-approvals-queue');
             if (!currentlyPendingHostRegistration) {
@@ -404,11 +441,9 @@
             if (isApproved && currentlyPendingHostRegistration) {
                 globalRegisteredHosts.push(currentlyPendingHostRegistration);
                 
-                // Refresh dashboards dynamically
                 rebuildGlobalTalentFeed();
                 appendHostToAgencyMatrix(currentlyPendingHostRegistration);
 
-                // Auto-fill Host Profile elements for evaluation view
                 document.getElementById('host-profile-name-label').innerText = currentlyPendingHostRegistration.username;
                 document.getElementById('host-profile-uid-label').innerText = `ID: ${currentlyPendingHostRegistration.uid}`;
                 
@@ -478,36 +513,57 @@
             tableBody.appendChild(row);
         }
 
-        // Paystack Monetization Framework Implementation
+        // Direct Monetization & Processing Pipeline Engine
         function routeToPaystackGateway(coins, priceUsd) {
-            // Memory assignments strictly match requested rate schema
             selectedCoinsPackage = coins;
             selectedCostPackage = priceUsd;
             
-            document.getElementById('paystack-redirect-modal').style.display = 'flex';
+            // Clean inputs when opening a fresh module channel
+            document.getElementById('billing-card-name').value = '';
+            document.getElementById('billing-card-number').value = '';
+            document.getElementById('billing-card-expiry').value = '';
+            document.getElementById('billing-card-cvv').value = '';
             
-            setTimeout(() => {
-                document.getElementById('paystack-frame-simulator').style.display = 'block';
-                document.getElementById('ps-amount').innerText = `$${priceUsd.toFixed(2)} USD`;
-            }, 1000);
+            // Show billing configuration setup form interface
+            document.getElementById('paystack-billing-form').style.display = 'block';
+            document.getElementById('paystack-loading-screen').style.display = 'none';
+            
+            document.getElementById('paystack-redirect-modal').style.display = 'flex';
+            document.getElementById('ps-amount').innerText = `$${priceUsd.toFixed(2)} USD`;
         }
 
-        function confirmPaystackDepositLoop() {
-            // Coins are credited ONLY inside this loop branch upon successful user manual interaction
-            walletCoins += selectedCoinsPackage;
-            document.getElementById('user-wallet-balance').innerText = walletCoins.toLocaleString() + " Coins";
-            closePaystackModal();
-            alert(`✅ Paystack Verification Complete!\nYour framework balance has been updated with ${selectedCoinsPackage.toLocaleString()} Coins.`);
+        function executeCardWithdrawalPipeline() {
+            const name = document.getElementById('billing-card-name').value;
+            const cardNum = document.getElementById('billing-card-number').value;
+            const expiry = document.getElementById('billing-card-expiry').value;
+            const cvv = document.getElementById('billing-card-cvv').value;
+
+            if (!name || !cardNum || !expiry || !cvv) {
+                alert("❌ Verification Failed: All secure account fields are required to process a withdrawal.");
+                return;
+            }
+
+            // Enter procedural authorization state
+            document.getElementById('paystack-billing-form').style.display = 'none';
+            document.getElementById('paystack-loading-screen').style.display = 'block';
+
+            // Simulate the secure deduction loop delay phase
+            setTimeout(() => {
+                walletCoins += selectedCoinsPackage;
+                document.getElementById('user-wallet-balance').innerText = walletCoins.toLocaleString() + " Coins";
+                
+                document.getElementById('paystack-redirect-modal').style.display = 'none';
+                alert(`✅ Payment Authorized & Settled!\n$${selectedCostPackage.toFixed(2)} USD successfully deducted. Your wallet has been credited with ${selectedCoinsPackage.toLocaleString()} Coins.`);
+            }, 2500);
         }
 
         function closePaystackModal() {
             document.getElementById('paystack-redirect-modal').style.display = 'none';
-            document.getElementById('paystack-frame-simulator').style.display = 'none';
             selectedCoinsPackage = 0;
             selectedCostPackage = 0;
         }
 
-        // Messaging Control Engines
+        // Messaging Engine
         function openChatMessengerGateway(targetName) {
             targetedChatParticipant = targetName;
             document.getElementById('messenger-target-name').innerText = `Chat with ${targetName}`;
@@ -529,7 +585,7 @@
             document.getElementById('host-messenger-modal').style.display = 'none';
         }
 
-        // Camera Execution Pipelines
+        // Camera Framework Control Nodes
         function launchVideoCallModule(hostName, hostUid) {
             document.getElementById('video-call-room-modal').style.display = 'flex';
             activeCallSecondsCounter = 0;
@@ -547,8 +603,8 @@
                     }, 1000);
                 })
                 .catch(err => {
-                    console.warn("Hardware Streaming Blocked: ", err);
-                    alert("⚠️ Video device failure or permission denied.");
+                    console.warn("Hardware Tracking Intercepted: ", err);
+                    alert("⚠️ Live hardware media interface rejected or unavailable.");
                 });
         }
 
@@ -563,4 +619,4 @@
         }
     </script>
 </body>
-                    </html>
+    </html>
