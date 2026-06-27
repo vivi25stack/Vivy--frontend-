@@ -56,7 +56,6 @@
         .modal-box { background: #121B33; width: 100%; max-width: 400px; border-radius: 24px; border: 1px solid #243766; padding: 24px; box-sizing: border-box; text-align: center; }
         .support-link { text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted); }
         
-        /* Video feeds layout */
         #video-canvas-element { width: 100%; height: 220px; background: #000; border-radius: 16px; margin-top: 10px; object-fit: cover; border: 1px solid #1E293B; }
         .table-log { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 0.85rem; }
         .table-log th, .table-log td { padding: 8px; border-bottom: 1px solid #1E293B; }
@@ -80,6 +79,8 @@
 
             <div id="auth-subform-user" class="card" style="display: none;">
                 <h3>📱 Secure Client Registration</h3>
+                <label>Username / Display Handle</label>
+                <input type="text" id="login-user-name" placeholder="John Doe">
                 <label>Email Address</label>
                 <input type="email" id="login-user-email" placeholder="name@domain.com">
                 <label>Password</label>
@@ -127,27 +128,28 @@
 
             <h3 style="margin: 15px 0 8px 0; font-size: 1.1rem;">💎 Purchase Premium Vivy Tokens</h3>
             <div class="grid-2">
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(1000, 2000)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(250, 0.50)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">250 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$0.50 USD</button>
+                </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(500, 1.50)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">500 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$1.50 USD</button>
+                </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(1000, 2.00)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,000 Coins</b>
-                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦2,000 NGN</button>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$2.00 USD</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(2500, 5000)">
-                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">2,500 Coins</b>
-                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦5,000 NGN</button>
-                </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(5000, 10000)">
-                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">5,000 Coins</b>
-                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦10,000 NGN</button>
-                </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(15000, 30000)">
-                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">15,000 Coins</b>
-                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦30,000 NGN</button>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(1500, 2.90)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,500 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$2.90 USD</button>
                 </div>
             </div>
 
             <h3 style="margin: 25px 0 10px 0; font-size: 1.1rem;">💃 Active Talent Channels Online</h3>
             <div id="global-active-hosts-feed">
-                </div>
+                <p style="font-size:0.85rem; color:var(--text-muted); text-align:center;">No talent channels currently broadcast live.</p>
+            </div>
             <div class="support-link">📧 Client Support: vivylive912@gmail.com</div>
         </div>
 
@@ -155,7 +157,7 @@
             <div class="card" style="border-left: 4px solid var(--accent-green); background: linear-gradient(135deg, #0A1A14, #0F1526);">
                 <div class="flex-row">
                     <div>
-                        <div style="font-weight:bold; font-size:1.1rem;" id="host-profile-name-label">Unassigned</div>
+                        <div style="font-weight:bold; font-size:1.1rem;" id="host-profile-name-label">Unassigned Host</div>
                         <span class="user-id-tag" id="host-profile-uid-label">ID: PENDING</span>
                     </div>
                     <div style="text-align:right;">
@@ -167,12 +169,7 @@
 
             <h4 style="margin:15px 0 8px 0;">📱 Active Users Online (Pitch Call Proposals)</h4>
             <div id="host-active-users-directory">
-                <div class="card" style="padding:12px; margin-bottom: 8px;">
-                    <div class="flex-row">
-                        <div><strong>Alex Premium 🇺🇸</strong> <span style="font-size:0.75rem; color:var(--accent-green);">● Online</span></div>
-                        <button class="btn btn-blue btn-sm" onclick="openChatMessengerGateway('Alex Premium 🇺🇸')">Send Message</button>
-                    </div>
-                </div>
+                <p style="font-size:0.85rem; color:var(--text-muted); text-align:center;">Searching for online users...</p>
             </div>
             <div class="support-link">📧 Host Support: vivylive912@gmail.com</div>
         </div>
@@ -207,8 +204,7 @@
                             <th>Weekly Earnings</th>
                         </tr>
                     </thead>
-                    <tbody id="agency-host-table-body">
-                        </tbody>
+                    <tbody id="agency-host-table-body"></tbody>
                 </table>
             </div>
         </div>
@@ -223,7 +219,7 @@
                     </div>
                     <div style="background:rgba(0,0,0,0.3); padding:8px; border-radius:8px;">
                         <span style="font-size:0.7rem; color:var(--text-muted);">Platform Vault</span>
-                        <div style="font-size:1.2rem; font-weight:bold; color:var(--accent-green);">₦0.00</div>
+                        <div style="font-size:1.2rem; font-weight:bold; color:var(--accent-green);">$0.00</div>
                     </div>
                 </div>
             </div>
@@ -235,8 +231,8 @@
         </div>
 
         <div class="nav-footer" id="main-navigation-navbar" style="display: none;">
-            <div class="nav-item active" id="nav-btn-user" onclick="switchActiveViewport('user')">📱<br>User Hub</div>
-            <div class="nav-item" id="nav-btn-host" onclick="switchActiveViewport('host')">💃<br>Host Lounge</div>
+            <div class="nav-item active" id="nav-btn-user" onclick="switchActiveViewport('user-dashboard')">📱<br>User Hub</div>
+            <div class="nav-item" id="nav-btn-host" onclick="switchActiveViewport('host-dashboard')">💃<br>Host Lounge</div>
         </div>
 
     </div>
@@ -247,12 +243,13 @@
             <h3 style="color: #FFF; margin: 0;">Connecting Paystack Checkout...</h3>
             <p style="color: var(--text-muted); font-size: 0.85rem; margin: 8px 0 20px 0;">Securing direct token acquisition sequence channel.</p>
             <div id="paystack-frame-simulator" style="background:#FFF; color:#000; padding:16px; border-radius:12px; text-align:left; display:none;">
-                <b style="color:#3AC5A0;">Paystack Checkout</b>
+                <b style="color:#3AC5A0;">Paystack Checkout Gateway</b>
                 <div style="margin-top:10px; font-size:0.85rem;">Transaction Ref: <span id="ps-ref">PS-7492</span></div>
-                <div style="font-size:1.2rem; font-weight:900; margin:8px 0;" id="ps-amount">₦0.00</div>
-                <button class="btn btn-green" style="background:#3AC5A0; margin-top:5px;" onclick="confirmPaystackDepositLoop()">Simulate Successful Payment</button>
+                <div style="font-size:1.2rem; font-weight:900; margin:8px 0; color:#111;" id="ps-amount">$0.00 USD</div>
+                <p style="font-size:0.75rem; color:#666; margin:0 0 10px 0;">Local payments will convert securely according to current global USD valuation scales.</p>
+                <button class="btn btn-green" style="background:#3AC5A0; margin-top:5px; color:#FFF;" onclick="confirmPaystackDepositLoop()">Simulate Successful Payment</button>
             </div>
-            <button class="btn btn-danger btn-sm" style="margin-top: 10px; width:100%;" onclick="closePaystackModal()">Cancel Process</button>
+            <button class="btn btn-danger btn-sm" style="margin-top: 15px; width:100%;" onclick="closePaystackModal()">Cancel Process</button>
         </div>
     </div>
 
@@ -262,7 +259,7 @@
             <div id="messenger-chat-history" style="height: 150px; background:#0A0F1D; border: 1px solid #1E293B; border-radius:12px; padding:10px; overflow-y:auto; font-size:0.85rem; margin-bottom:10px;">
                 <p style="color:var(--text-muted); font-size:0.75rem; text-align:center;">No previous transaction history records available.</p>
             </div>
-            <textarea id="messenger-input-field" placeholder="Type an alluring message to convince user to setup a video session call..." rows="2"></textarea>
+            <textarea id="messenger-input-field" placeholder="Type a message..." rows="2"></textarea>
             <button class="btn btn-green" onclick="dispatchHostChatMessage()">Send Direct Pitch</button>
             <button class="btn btn-pink btn-sm" style="background:none; margin-top:8px; width:100%;" onclick="closeMessengerModal()">Close Connection</button>
         </div>
@@ -282,7 +279,7 @@
     <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
 
     <script>
-        // Memory Architecture Ledger
+        // System Application Database Architecture
         let walletCoins = 0;
         let selectedCoinsPackage = 0;
         let selectedCostPackage = 0;
@@ -290,8 +287,8 @@
         let activeCallSecondsCounter = 0;
         let targetedChatParticipant = "";
 
-        // Application State DB Models
         let globalRegisteredHosts = [];
+        let globalOnlineUsers = [];
         let currentlyPendingHostRegistration = null;
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -315,7 +312,8 @@
             const selectedElement = document.getElementById(`view-${viewKey}`);
             if (selectedElement) selectedElement.classList.add('active');
             
-            const navBtn = document.getElementById(`nav-btn-${viewKey.split('-')[1]}`);
+            const targetNavId = viewKey.startsWith('user') ? 'nav-btn-user' : viewKey.startsWith('host') ? 'nav-btn-host' : '';
+            const navBtn = document.getElementById(targetNavId);
             if (navBtn) navBtn.classList.add('active');
         }
 
@@ -325,15 +323,24 @@
             document.getElementById('auth-subform-agency').style.display = (formKey === 'agency') ? 'block' : 'none';
         }
 
-        // Authentication Verification Nodes
+        // Access Validation Channels
         function processUserAccountValidation() {
+            const username = document.getElementById('login-user-name').value || "Client User";
             const email = document.getElementById('login-user-email').value;
             const pass = document.getElementById('login-user-pass').value;
             
             if (!email || !pass) {
-                alert("❌ Validation Failure: You must input a valid email address and password parameter.");
+                alert("❌ Validation Failure: You must input a valid email address and password.");
                 return;
             }
+            
+            const generatedId = "VIVY-" + Math.floor(1000 + Math.random() * 9000);
+            document.getElementById('user-display-id').innerText = `ID: ${generatedId}`;
+            
+            // Push to active lists
+            globalOnlineUsers.push({ username, uid: generatedId });
+            rebuildHostsActiveUserDirectory();
+
             document.getElementById('main-navigation-navbar').style.display = 'flex';
             switchActiveViewport('user-dashboard');
         }
@@ -345,14 +352,13 @@
             const code = document.getElementById('login-host-code').value;
 
             if (!username || !email || !pass || !code) {
-                alert("❌ Validation Failure: Hosts require Username, Email, Password, and Code to join.");
+                alert("❌ Validation Failure: Complete all entry components to join.");
                 return;
             }
 
-            currentlyPendingHostRegistration = { username, email, pass, code, uid: "VIVY-" + Math.floor(1000 + Math.random() * 9000) };
+            currentlyPendingHostRegistration = { username, email, pass, code, uid: "HOST-" + Math.floor(1000 + Math.random() * 9000) };
             alert("✅ File transmitted to administrative queue. Dashboard access remains locked until Admin approves.");
             
-            // Build structure in admin review interface
             renderAdminApprovalComponent();
             switchActiveViewport('auth-gateway');
         }
@@ -364,7 +370,7 @@
             const pass = document.getElementById('login-agency-pass').value;
 
             if (!name || !email || !phone || !pass) {
-                alert("❌ Validation Failure: Complete all corporate fields to initialize Agency node.");
+                alert("❌ Validation Failure: Complete all fields to initialize.");
                 return;
             }
 
@@ -376,7 +382,7 @@
             switchActiveViewport('agency-dashboard');
         }
 
-        // Administrative Core Pipelines
+        // Administrative Management Channels
         function renderAdminApprovalComponent() {
             const container = document.getElementById('admin-pending-approvals-queue');
             if (!currentlyPendingHostRegistration) {
@@ -398,10 +404,13 @@
             if (isApproved && currentlyPendingHostRegistration) {
                 globalRegisteredHosts.push(currentlyPendingHostRegistration);
                 
-                // Synchronize and update user feed channels
+                // Refresh dashboards dynamically
                 rebuildGlobalTalentFeed();
-                // Synchronize and update agency reporting analytics
                 appendHostToAgencyMatrix(currentlyPendingHostRegistration);
+
+                // Auto-fill Host Profile elements for evaluation view
+                document.getElementById('host-profile-name-label').innerText = currentlyPendingHostRegistration.username;
+                document.getElementById('host-profile-uid-label').innerText = `ID: ${currentlyPendingHostRegistration.uid}`;
                 
                 alert(`👑 Approved structural profile access code for: ${currentlyPendingHostRegistration.username}`);
             } else {
@@ -413,6 +422,10 @@
 
         function rebuildGlobalTalentFeed() {
             const hostFeed = document.getElementById('global-active-hosts-feed');
+            if (globalRegisteredHosts.length === 0) {
+                hostFeed.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted); text-align:center;">No talent channels currently broadcast live.</p>`;
+                return;
+            }
             hostFeed.innerHTML = '';
             
             globalRegisteredHosts.forEach(host => {
@@ -427,10 +440,32 @@
                             <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;"><span class="pulse-dot"></span> Streaming Live</div>
                         </div>
                     </div>
-                    <button class="btn btn-green btn-sm" onclick="launchVideoCallModule('${host.username}', '${host.uid}')">Call Room</button>`;
+                    <button class="btn btn-green btn-sm" onclick="launchVideoCallModule('${host.username}', '${host.uid}')">🎥 Open Camera</button>`;
                 hostFeed.appendChild(element);
             });
             document.getElementById('admin-active-count').innerText = globalRegisteredHosts.length;
+        }
+
+        function rebuildHostsActiveUserDirectory() {
+            const userDir = document.getElementById('host-active-users-directory');
+            if (globalOnlineUsers.length === 0) {
+                userDir.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted); text-align:center;">Searching for online users...</p>`;
+                return;
+            }
+            userDir.innerHTML = '';
+
+            globalOnlineUsers.forEach(user => {
+                const item = document.createElement('div');
+                item.className = 'card';
+                item.style.padding = '12px';
+                item.style.marginBottom = '8px';
+                item.innerHTML = `
+                    <div class="flex-row">
+                        <div><strong>${user.username} 🌐</strong> <span class="user-id-tag" style="margin-left:5px;">${user.uid}</span></div>
+                        <button class="btn btn-blue btn-sm" onclick="openChatMessengerGateway('${user.username}')">Send Message</button>
+                    </div>`;
+                userDir.appendChild(item);
+            });
         }
 
         function appendHostToAgencyMatrix(hostObject) {
@@ -443,32 +478,36 @@
             tableBody.appendChild(row);
         }
 
-        // Paystack Monetization Architecture Loops
-        function routeToPaystackGateway(coins, priceNgn) {
+        // Paystack Monetization Framework Implementation
+        function routeToPaystackGateway(coins, priceUsd) {
+            // Memory assignments strictly match requested rate schema
             selectedCoinsPackage = coins;
-            selectedCostPackage = priceNgn;
+            selectedCostPackage = priceUsd;
             
             document.getElementById('paystack-redirect-modal').style.display = 'flex';
             
             setTimeout(() => {
                 document.getElementById('paystack-frame-simulator').style.display = 'block';
-                document.getElementById('ps-amount').innerText = `₦${priceNgn.toLocaleString()}.00 NGN`;
-            }, 1200);
+                document.getElementById('ps-amount').innerText = `$${priceUsd.toFixed(2)} USD`;
+            }, 1000);
         }
 
         function confirmPaystackDepositLoop() {
+            // Coins are credited ONLY inside this loop branch upon successful user manual interaction
             walletCoins += selectedCoinsPackage;
             document.getElementById('user-wallet-balance').innerText = walletCoins.toLocaleString() + " Coins";
             closePaystackModal();
-            alert(`✅ Paystack Verification Complete!\nYour framework balance updated with ${selectedCoinsPackage.toLocaleString()} Coins.`);
+            alert(`✅ Paystack Verification Complete!\nYour framework balance has been updated with ${selectedCoinsPackage.toLocaleString()} Coins.`);
         }
 
         function closePaystackModal() {
             document.getElementById('paystack-redirect-modal').style.display = 'none';
             document.getElementById('paystack-frame-simulator').style.display = 'none';
+            selectedCoinsPackage = 0;
+            selectedCostPackage = 0;
         }
 
-        // Active Chat & Messaging Channels Logic
+        // Messaging Control Engines
         function openChatMessengerGateway(targetName) {
             targetedChatParticipant = targetName;
             document.getElementById('messenger-target-name').innerText = `Chat with ${targetName}`;
@@ -490,12 +529,11 @@
             document.getElementById('host-messenger-modal').style.display = 'none';
         }
 
-        // Hardware Streaming & Video Session Engine Elements
+        // Camera Execution Pipelines
         function launchVideoCallModule(hostName, hostUid) {
             document.getElementById('video-call-room-modal').style.display = 'flex';
             activeCallSecondsCounter = 0;
             
-            // Explicitly unlock local camera stream loop
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then(stream => {
                     let videoPlayerElement = document.getElementById('video-canvas-element');
@@ -509,8 +547,8 @@
                     }, 1000);
                 })
                 .catch(err => {
-                    console.warn("Hardware Access Issue: ", err);
-                    alert("⚠️ Hardware streaming failed. Loading alternate virtual render pipeline.");
+                    console.warn("Hardware Streaming Blocked: ", err);
+                    alert("⚠️ Video device failure or permission denied.");
                 });
         }
 
@@ -521,16 +559,7 @@
             if (videoPlayerElement.srcObject) {
                 videoPlayerElement.srcObject.getTracks().forEach(track => track.stop());
             }
-            
             document.getElementById('video-call-room-modal').style.display = 'none';
-            
-            // Apply streaming metrics calculation variables to current profile balance dynamically
-            let calculatedEarningsValue = activeCallSecondsCounter * 0.15; 
-            document.getElementById('host-profile-name-label').innerText = "Active Verified Host";
-            document.getElementById('host-profile-uid-label').innerText = "ID: VERIFIED";
-            document.getElementById('host-earnings-balance').innerText = `$${calculatedEarningsValue.toFixed(2)}`;
-            
-            alert(`Session Terminated.\nDuration metrics computed successfully.`);
         }
     </script>
 </body>
