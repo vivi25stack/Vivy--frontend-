@@ -55,15 +55,14 @@
         /* Traditional Gateway Overlays */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
         .modal-box { background: #121B33; width: 100%; max-width: 400px; border-radius: 24px; border: 1px solid #243766; padding: 24px; box-sizing: border-box; text-align: center; }
+        .support-link { text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted); }
+        .support-link a { color: var(--accent-pink); text-decoration: none; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
 
-        <!-- ====================================================
-             📱 VIEW 1: USER DASHBOARD (STANDARD HOMEPAGE VIEW)
-             ==================================================== -->
         <div id="view-user-dashboard" class="view-panel active">
             <div class="card" style="background: linear-gradient(135deg, #171126, #0F1526); border-left: 4px solid var(--accent-pink);">
                 <div class="flex-row">
@@ -75,36 +74,34 @@
                 </div>
             </div>
 
-            <!-- Global Coin Purchase Grid (Updated Calculations Matrix) -->
             <h3 style="margin: 15px 0 8px 0; font-size: 1.1rem;">💎 Purchase Premium Vivy Tokens</h3>
             <div class="grid-2">
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(1000, 2.00)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="initiatePurchaseProcess(1000, 2.00)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,000 Coins</b>
                     <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$2.00 USD</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(1500, 3.00)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="initiatePurchaseProcess(1500, 3.00)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,500 Coins</b>
                     <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$3.00 USD</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(2500, 4.00)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="initiatePurchaseProcess(2500, 4.00)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">2,500 Coins</b>
                     <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$4.00 USD</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(3000, 5.00)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="initiatePurchaseProcess(3000, 5.00)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">3,000 Coins</b>
                     <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$5.00 USD</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(10000, 12.00)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="initiatePurchaseProcess(10000, 12.00)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">10,000 Coins</b>
                     <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$12.00 USD</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(50000, 54.00)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="initiatePurchaseProcess(50000, 54.00)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">50,000 Coins</b>
                     <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$54.00 USD</button>
                 </div>
             </div>
 
-            <!-- Active Live Hosts Pipeline -->
             <h3 style="margin: 25px 0 10px 0; font-size: 1.1rem;">💃 Active Talent Channels Online</h3>
             <div id="global-active-hosts-feed">
                 <div class="card flex-row" style="padding:12px;">
@@ -115,16 +112,13 @@
                             <div style="font-size:0.8rem; color:var(--text-muted); margin-top:2px;"><span class="pulse-dot"></span> Streaming Live</div>
                         </div>
                     </div>
-                    <button class="btn btn-green btn-sm" onclick="launchPrivateCallModule('Amara Golden', '5012')">Call Room</button>
+                    <button class="btn btn-green btn-sm" onclick="alert('Launching call room module...')">Call Room</button>
                 </div>
             </div>
 
             <div class="support-link">📧 Client Support: <a href="mailto:vivylive912@gmail.com">vivylive912@gmail.com</a></div>
         </div>
 
-        <!-- ====================================================
-             💃 VIEW 2: HOST TALENT LOUNGE (DRM LOCK ACTIVE)
-             ==================================================== -->
         <div id="view-host-dashboard" class="view-panel">
             <div id="host-registration-sub-view">
                 <div class="card">
@@ -148,7 +142,7 @@
             </div>
 
             <div id="host-operational-sub-view" style="display:none;">
-                <div class="card" style="border-left: 4px solid var(--accent-green); background: linear-gradient(135deg, #0A1A14, #0F1526);">
+                <div class="card" style="border-left: 4px solid var(--accent-green); background: linear-gradient(135deg, #0A1A14, #0F1526); margin-top: 10px;">
                     <div class="flex-row">
                         <div style="display:flex; align-items:center; gap:12px;">
                             <img id="host-profile-picture-frame" src="" class="avatar-circle" style="border-color:var(--accent-green);" alt="Profile">
@@ -173,9 +167,6 @@
             <div class="support-link">📧 Host Support: <a href="mailto:vivylive912@gmail.com">vivylive912@gmail.com</a></div>
         </div>
 
-        <!-- ====================================================
-             🏢 VIEW 3: HIDDEN EXECUTED DASHBOARDS (LINK ACCESS ONLY)
-             ==================================================== -->
         <div id="view-agency-dashboard" class="view-panel">
             <div class="card" style="background: linear-gradient(135deg, #0B192E, #0F1526); border-top: 4px solid var(--accent-blue);">
                 <h3 style="margin-top:0;">🏢 Agency Partner Control Core</h3>
@@ -207,9 +198,6 @@
             </div>
         </div>
 
-        <!-- ====================================================
-             🗺️ APP PLATFORM FIXED NAVIGATION FOOTER
-             ==================================================== -->
         <div class="nav-footer">
             <div class="nav-item active" id="nav-btn-user" onclick="switchActiveViewport('user')">📱<br>User Dashboard</div>
             <div class="nav-item" id="nav-btn-host" onclick="switchActiveViewport('host')">💃<br>Host Dashboard</div>
@@ -217,9 +205,6 @@
 
     </div>
 
-    <!-- ====================================================
-         💳 HARD TRANSACTION SECURE INPUT MODAL GATEWAY
-         ==================================================== -->
     <div id="payment-processing-modal" class="modal-overlay">
         <div class="modal-box">
             <h3 style="margin-top:0; color:#FFF;" id="modal-payment-header">Secure Checkout</h3>
@@ -228,10 +213,8 @@
             <select id="payment-method-selector" onchange="togglePaymentFieldLayout(this.value)">
                 <option value="card">💳 Visa / Mastercard (US / India / Global)</option>
                 <option value="usdt">🪙 USDT (Crypto Stablecoin Network)</option>
-                <option value="bank">🇳🇬 Local African Bank Card / Transfer</option>
             </select>
 
-            <!-- Card Subform Fields -->
             <div id="subform-card-wrapper" style="margin-top:12px;">
                 <input type="text" placeholder="💳 Card Number (16 Digits)">
                 <div class="grid-2" style="margin-top:6px;">
@@ -240,7 +223,6 @@
                 </div>
             </div>
 
-            <!-- USDT Address Field -->
             <div id="subform-usdt-wrapper" style="margin-top:12px; display:none;">
                 <p style="font-size:0.75rem; color:var(--accent-gold); text-align:left; margin:0;">Send funds to Corporate TRC-20 Node:<br><b style="font-family:monospace; color:#FFF;">TY2Z3hPX8W6ka...</b></p>
                 <input type="text" placeholder="Paste your TXID transaction hash here">
@@ -252,6 +234,8 @@
     </div>
 
     <script>
+        // Track numeric values globally rather than scraping text strings
+        let currentCoinBalance = 0; 
         let currentTargetCoins = 0;
         let currentTargetCost = 0;
 
@@ -259,7 +243,6 @@
             const URLParameters = new URLSearchParams(window.location.search);
             const panelRoute = URLParameters.get('panel');
             
-            // ROUTING HANDLER: Isolates views based entirely on secure explicit token string links
             if (panelRoute === 'agency') {
                 hideAppNavigationElements();
                 switchActiveViewport('agency');
@@ -270,19 +253,21 @@
         });
 
         function switchActiveViewport(viewKey) {
-            document.querySelectorAll('.view-panel').forEach(v => v.style.display = 'none');
+            // Manage views cleanly via your built-in class setup
+            document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
-            document.getElementById(`view-${viewKey}-dashboard`).style.display = 'block';
+            const targetedView = document.getElementById(`view-${viewKey}-dashboard`);
+            if (targetedView) targetedView.classList.add('active');
+            
             const navBtn = document.getElementById(`nav-btn-${viewKey}`);
-            if(navBtn) navBtn.classList.add('active');
+            if (navBtn) navBtn.classList.add('active');
         }
 
         function hideAppNavigationElements() {
             document.querySelector('.nav-footer').style.display = 'none';
         }
 
-        // 💳 MONETIZATION WITHDRAWAL ENFORCEMENT ENGINE
         function initiatePurchaseProcess(coinVolume, costUsd) {
             currentTargetCoins = coinVolume;
             currentTargetCost = costUsd;
@@ -297,12 +282,11 @@
         }
 
         function executeHardFinancialWithdrawal() {
-            // Simulated transaction parsing pipeline - forces user detail requirements
             alert(`🔒 Financial Authorization Complete!\nWithdrawn $${currentTargetCost.toFixed(2)} USD via chosen banking network parameter.\nYour token ledger is now sync updated.`);
             
-            let walletElement = document.getElementById('user-wallet-balance');
-            let updatedBalance = parseInt(walletElement.innerText) + currentTargetCoins;
-            walletElement.innerText = updatedBalance.toLocaleString() + " Coins";
+            // Fixed calculation math
+            currentCoinBalance += currentTargetCoins;
+            document.getElementById('user-wallet-balance').innerText = currentCoinBalance.toLocaleString() + " Coins";
             
             closePurchaseModal();
         }
@@ -311,7 +295,6 @@
             document.getElementById('payment-processing-modal').style.display = 'none';
         }
 
-        // HOST REGISTRATION MANAGEMENT LABELS
         function submitHostApplicationNode() {
             alert("✅ Registration packet compiled. Your workspace details have been committed to the master core database queue waiting for Admin approval loop.");
         }
@@ -326,4 +309,4 @@
         }
     </script>
 </body>
-                        </html>
+                                                                                                                          </html>
