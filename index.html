@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Security Policy: Direct prevention of screen capture on supporting Android webview wrappers -->
     <meta name="surface-security" content="disable-capture">
-    <title>VivyLive Global Network</title>
+    <title>VivyLive Global Hub</title>
     <style>
         :root {
             --bg-dark: #060913;
@@ -21,26 +20,22 @@
             background-color: var(--bg-dark); color: var(--text-main);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-user-select: none; user-select: none;
         }
-        /* Layout Scaffolding */
         .app-container { max-width: 500px; margin: 0 auto; min-height: 100vh; position: relative; padding-bottom: 80px; }
-        .view-panel { display: none; padding: 16px; animation: fadeIn 0.3s ease-in-out; }
+        .view-panel { display: none; padding: 16px; }
         .view-panel.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* Premium UI UI Elements */
         .card { background: var(--bg-card); border-radius: 20px; padding: 18px; margin-bottom: 16px; border: 1px solid #1E293B; }
         .flex-row { display: flex; justify-content: space-between; align-items: center; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         
-        /* Form Inputs */
         input, select {
             width: 100%; padding: 14px; background: #0A0F1D; border: 1px solid #1E293B;
             border-radius: 12px; color: white; margin-top: 6px; box-sizing: border-box; font-size: 1rem;
         }
         label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-top: 12px; font-weight: 600; }
         
-        /* Buttons */
         .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; color: white; cursor: pointer; text-align: center; display: block; box-sizing: border-box; margin-top: 10px; }
         .btn-pink { background: linear-gradient(135deg, #FF2D55, #D11A3E); }
         .btn-green { background: linear-gradient(135deg, #22C55E, #16A34A); }
@@ -48,87 +43,70 @@
         .btn-gold { background: linear-gradient(135deg, #FFB800, #D99B00); color: #000; }
         .btn-sm { padding: 6px 12px; font-size: 0.8rem; width: auto; margin-top: 0; border-radius: 8px; }
         
-        /* User Profile & Avatars */
         .avatar-circle { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-pink); background: #1E293B; }
         .user-id-tag { background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-family: monospace; color: var(--accent-gold); }
+        .pulse-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; display: inline-block; }
         
-        /* Live Status Indicator */
-        .pulse-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
-        
-        /* Chat Module layout */
-        .chat-box { background: #060913; border: 1px solid #1E293B; border-radius: 14px; height: 200px; overflow-y: auto; padding: 12px; margin: 10px 0; display: flex; flex-direction: column; gap: 8px; }
-        .msg { padding: 8px 12px; border-radius: 12px; max-width: 85%; font-size: 0.9rem; }
-        .msg-received { background: #1E293B; align-self: flex-start; }
-        .msg-sent { background: var(--accent-blue); align-self: flex-end; }
-        
-        /* Navigation Footer */
+        /* Nav Bar only contains Client User & Host views now */
         .nav-footer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: #0A0F1D; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 12px 0; z-index: 999; }
-        .nav-item { color: var(--text-muted); font-size: 0.8rem; text-align: center; cursor: pointer; text-decoration: none; font-weight: bold; }
+        .nav-item { color: var(--text-muted); font-size: 0.85rem; text-align: center; cursor: pointer; text-decoration: none; font-weight: bold; width: 50%; }
         .nav-item.active { color: var(--accent-pink); }
         
-        /* Anti-Screen Recording DRM Protection Layer overlay for Hosts */
-        .drm-secure-overlay { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; filter: blur(0px); transition: filter 0.5s; }
-        body.host-mode-active .drm-secure-overlay { position: relative; }
-        
-        /* Support Floating Link */
-        .support-link { font-size: 0.85rem; text-align: center; margin: 15px 0; color: var(--text-muted); }
-        .support-link a { color: var(--accent-blue); text-decoration: none; font-weight: bold; }
+        /* Traditional Gateway Overlays */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .modal-box { background: #121B33; width: 100%; max-width: 400px; border-radius: 24px; border: 1px solid #243766; padding: 24px; box-sizing: border-box; text-align: center; }
     </style>
 </head>
-<body class="host-mode-active">
+<body>
 
     <div class="app-container">
 
         <!-- ====================================================
-             📱 VIEW 1: PREMIUM USER (CLIENT) DASHBOARD (DEFAULT GROUND PAGE)
+             📱 VIEW 1: USER DASHBOARD (STANDARD HOMEPAGE VIEW)
              ==================================================== -->
         <div id="view-user-dashboard" class="view-panel active">
             <div class="card" style="background: linear-gradient(135deg, #171126, #0F1526); border-left: 4px solid var(--accent-pink);">
                 <div class="flex-row">
                     <div>
-                        <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: bold;">🪙 My Coin Wallet Balance</span>
+                        <span style="color: var(--text-muted); font-size: 0.85rem; font-weight: bold;">🪙 Coin Account Balance</span>
                         <div style="font-size: 2.2rem; font-weight: 900; color: var(--accent-gold);" id="user-wallet-balance">0 Coins</div>
                     </div>
                     <span class="user-id-tag">ID: VIVY-8941</span>
                 </div>
             </div>
 
-            <!-- Global Coin Purchase Grid Store -->
-            <h3 style="margin: 15px 0 8px 0; font-size: 1.1rem;">💎 Global Premium Token Store</h3>
+            <!-- Global Coin Purchase Grid (Updated Calculations Matrix) -->
+            <h3 style="margin: 15px 0 8px 0; font-size: 1.1rem;">💎 Purchase Premium Vivy Tokens</h3>
             <div class="grid-2">
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="triggerGlobalPaymentGateway(1000, 2.00)">
-                    <b style="color:var(--accent-gold); display:block; font-size:1.1rem;">1,000 Coins</b>
-                    <span style="font-size:0.85rem; color:var(--text-muted); text-decoration:line-through;">$5.00</span>
-                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%;">$2.00 USD</button>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(1000, 2.00)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,000 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$2.00 USD</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="triggerGlobalPaymentGateway(2500, 1.00)">
-                    <b style="color:var(--accent-gold); display:block; font-size:1.1rem;">2,500 Coins</b>
-                    <span style="font-size:0.85rem; color:var(--text-muted); text-decoration:line-through;">$3.50</span>
-                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%;">$1.00 USD</button>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(1500, 3.00)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,500 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$3.00 USD</button>
                 </div>
-            </div>
-            
-            <div class="card" style="margin-top:12px; text-align:center; padding:12px;" onclick="triggerGlobalPaymentGateway(250, 0.50)">
-                <div class="flex-row">
-                    <span style="font-weight:bold; color:var(--accent-gold);">⚡ Starter Pack: 250 Coins</span>
-                    <button class="btn btn-pink btn-sm" style="margin:0;">$0.50 USD</button>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(2500, 4.00)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">2,500 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$4.00 USD</button>
                 </div>
-            </div>
-
-            <!-- Global Multi-Gateway Interface Overlay Drawer -->
-            <div id="global-payment-drawer" class="card" style="display:none; border-color:var(--accent-gold); margin-top:15px; background:#14110B;">
-                <h4 style="margin:0 0 10px 0; color:var(--accent-gold);">🌐 Global Checkout Hub (US, India, Worldwide)</h4>
-                <p style="font-size:0.8rem; margin:0 0 12px 0; color:var(--text-muted);">Select your global region or decentralized method:</p>
-                <button class="btn btn-blue btn-sm" style="width:100%; margin-bottom:6px;" onclick="processInternationalCheckout('stripe')">💳 International Card / Bank (US / India)</button>
-                <button class="btn btn-green btn-sm" style="width:100%; margin-bottom:6px;" onclick="processInternationalCheckout('usdt')">🪙 Pay with Crypto (USDT Gateway)</button>
-                <button class="btn btn-pink btn-sm" style="width:100%;" onclick="processInternationalCheckout('paystack')">🇳🇬 African Bank Card / Transfer (Paystack)</button>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(3000, 5.00)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">3,000 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$5.00 USD</button>
+                </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(10000, 12.00)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">10,000 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$12.00 USD</button>
+                </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="initiatePurchaseProcess(50000, 54.00)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">50,000 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">$54.00 USD</button>
+                </div>
             </div>
 
             <!-- Active Live Hosts Pipeline -->
-            <h3 style="margin: 20px 0 10px 0; font-size: 1.1rem;">💃 Premium Active Hosts Online</h3>
+            <h3 style="margin: 25px 0 10px 0; font-size: 1.1rem;">💃 Active Talent Channels Online</h3>
             <div id="global-active-hosts-feed">
-                <!-- Host Node Card -->
                 <div class="card flex-row" style="padding:12px;">
                     <div style="display:flex; align-items:center; gap:12px;">
                         <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" class="avatar-circle" alt="Host Profile">
@@ -141,50 +119,34 @@
                 </div>
             </div>
 
-            <!-- Unified Inside-App Private Communication Arena -->
-            <div id="private-communication-arena" class="card" style="display:none; border-color:var(--accent-blue); margin-top:15px;">
-                <div class="flex-row">
-                    <h4 style="margin:0;" id="arena-target-title">Chatting Privately</h4>
-                    <button class="btn btn-pink btn-sm" style="margin:0;" onclick="closePrivateCallModule()">End Session</button>
-                </div>
-                <div class="chat-box" id="user-arena-chat-history"></div>
-                <div style="display:flex; gap:8px;">
-                    <input type="text" id="user-arena-input-field" placeholder="Type premium response...">
-                    <button class="btn btn-blue btn-sm" style="margin:0; padding:0 20px;" onclick="sendArenaMessage('user')">Send</button>
-                </div>
-            </div>
-
-            <div class="support-link">📧 Need assistance? Contact global support at: <a href="mailto:vivylive912@gmail.com">vivylive912@gmail.com</a></div>
+            <div class="support-link">📧 Client Support: <a href="mailto:vivylive912@gmail.com">vivylive912@gmail.com</a></div>
         </div>
 
         <!-- ====================================================
-             💃 VIEW 2: CERTIFIED HOST TALENT LOUNGE (DRM LOCK ACTIVE)
+             💃 VIEW 2: HOST TALENT LOUNGE (DRM LOCK ACTIVE)
              ==================================================== -->
-        <div id="view-host-dashboard" class="view-panel drm-secure-overlay">
-            
-            <!-- Host Registration Screen (If not registered/approved yet) -->
+        <div id="view-host-dashboard" class="view-panel">
             <div id="host-registration-sub-view">
                 <div class="card">
-                    <h3 style="margin-top:0; color:var(--accent-green);">💃 Apply for Host Verification Node</h3>
-                    <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.4;">An authorized tracking Agency Invitation Code is required to unlock broadcast capabilities and activate cash distribution pipelines.</p>
+                    <h3 style="margin-top:0; color:var(--accent-green);">💃 Host Talent Verification Node</h3>
+                    <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.4;">An Agency Invitation Code is strictly required before you can get approved by the admin and work on the app.</p>
                     
-                    <label>Upload High-Fidelity Profile Portrait Image</label>
+                    <label>Add Profile Portrait Image</label>
                     <input type="file" id="host-reg-avatar" accept="image/*" style="padding:8px;">
                     
-                    <label>Desired Unique Username</label>
-                    <input type="text" id="host-reg-username" placeholder="e.g., RubyDiamond">
+                    <label>Choose Username</label>
+                    <input type="text" id="host-reg-username" placeholder="Enter registration handle name...">
                     
                     <label>Email Address</label>
-                    <input type="email" id="host-reg-email" placeholder="e.g., ruby@domain.com">
+                    <input type="email" id="host-reg-email" placeholder="Enter your email...">
                     
-                    <label>Agency Reference Code Assignment</label>
-                    <input type="text" id="host-reg-agency-code" placeholder="Paste Agency invitation string here">
+                    <label>Agency Invitation Code</label>
+                    <input type="text" id="host-reg-agency-code" placeholder="Paste structural invitation code">
                     
-                    <button class="btn btn-green" onclick="submitHostApplicationNode()">Submit Verification Packet</button>
+                    <button class="btn btn-green" onclick="submitHostApplicationNode()">Submit for Admin Approval</button>
                 </div>
             </div>
 
-            <!-- Approved Operational Host Room Interface -->
             <div id="host-operational-sub-view" style="display:none;">
                 <div class="card" style="border-left: 4px solid var(--accent-green); background: linear-gradient(135deg, #0A1A14, #0F1526);">
                     <div class="flex-row">
@@ -196,302 +158,172 @@
                             </div>
                         </div>
                         <div style="text-align:right;">
-                            <span style="color: var(--text-muted); font-size: 0.8rem; display:block;">My Net Income Balance</span>
-                            <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-green);" id="host-earnings-balance">$0.00 USD</div>
+                            <span style="color: var(--text-muted); font-size: 0.8rem; display:block;">Earnings Balance</span>
+                            <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-green);" id="host-earnings-balance">$0.00</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Client Attraction & Convergence Feed -->
-                <h4 style="margin:15px 0 8px 0;">📱 Active Client Users (Convince them to Call)</h4>
-                <div class="card flex-row" style="padding:10px; margin-bottom:8px;">
-                    <div>
-                        <strong>Alex Premium 🇺🇸</strong>
-                        <div style="font-size:0.75rem; color:var(--accent-gold);">💰 High Token Volume Holder</div>
-                    </div>
-                    <button class="btn btn-blue btn-sm" onclick="launchHostChatInteraction('Alex Premium')">Chat Client</button>
-                </div>
-
-                <!-- Host Interaction Box Overlay -->
-                <div id="host-interaction-chat-module" class="card" style="display:none; border-color:var(--accent-green);">
-                    <h4 style="margin:0;" id="host-chat-target-title">Chat Room</h4>
-                    <div class="chat-box" id="host-arena-chat-history"></div>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="host-arena-input-field" placeholder="Pitch yourself to client...">
-                        <button class="btn btn-green btn-sm" style="margin:0; padding:0 20px;" onclick="sendArenaMessage('host')">Send</button>
-                    </div>
+                <h4 style="margin:15px 0 8px 0;">📱 Active Users (Chat them to convince them to call)</h4>
+                <div class="card flex-row" style="padding:10px;">
+                    <div><strong>Alex Premium 🇺🇸</strong></div>
+                    <button class="btn btn-blue btn-sm" onclick="alert('Chat link active. Send convincing pitches now.')">Chat User</button>
                 </div>
             </div>
-
-            <div class="support-link">📧 Host Network Support: <a href="mailto:vivylive912@gmail.com">vivylive912@gmail.com</a></div>
+            <div class="support-link">📧 Host Support: <a href="mailto:vivylive912@gmail.com">vivylive912@gmail.com</a></div>
         </div>
 
         <!-- ====================================================
-             🏢 VIEW 3: VERIFIED AGENCY PARTNER DASHBOARD
+             🏢 VIEW 3: HIDDEN EXECUTED DASHBOARDS (LINK ACCESS ONLY)
              ==================================================== -->
         <div id="view-agency-dashboard" class="view-panel">
-            
-            <!-- Agency Account Workspace Creation Portal -->
-            <div id="agency-registration-sub-view">
-                <div class="card">
-                    <h3 style="margin-top:0; color:var(--accent-blue);">🏢 Register Verified Agency Hub</h3>
-                    <label>Agency Structural Naming Convention</label>
-                    <input type="text" id="agency-reg-name" placeholder="e.g., Apex Management Network">
-                    <label>Corporate Account Email</label>
-                    <input type="email" id="agency-reg-email" placeholder="e.g., manager@apex.com">
-                    <label>Secure Key Password</label>
-                    <input type="password" id="agency-reg-pass" placeholder="••••••••">
-                    <button class="btn btn-blue" onclick="submitAgencyApplicationNode()">Register Operational Agency Node</button>
-                </div>
-            </div>
-
-            <!-- Active Agency Tracking Matrix Console -->
-            <div id="agency-operational-sub-view" style="display:none;">
-                <div class="card" style="background: linear-gradient(135deg, #0B192E, #0F1526); border-top: 4px solid var(--accent-blue);">
-                    <h3 style="margin:0 0 10px 0;" id="agency-dashboard-header-title">Agency Hub</h3>
-                    <div class="grid-2">
-                        <div>
-                            <span style="color:var(--text-muted); font-size:0.75rem;">Gross Managed Talent Volume</span>
-                            <div style="font-size:1.3rem; font-weight:bold;" id="agency-total-host-coins">0 Coins</div>
-                        </div>
-                        <div>
-                            <span style="color:var(--text-muted); font-size:0.75rem;">Earned Commission Ledger (10%)</span>
-                            <div style="font-size:1.3rem; font-weight:bold; color:var(--accent-gold);" id="agency-total-commission">$0.00</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Invite Link Config Asset Boxes -->
-                <div class="card">
-                    <span style="font-size:0.8rem; color:var(--text-muted); font-weight:bold;">🔗 My Shareable Invitation Link:</span>
-                    <input type="text" id="agency-invitation-link-field" readonly style="color:var(--accent-blue); text-align:center; font-size:0.85rem;" onclick="this.select(); document.execCommand('copy'); alert('Link copied!');">
-                    
-                    <div style="margin-top:10px;">
-                        <span style="font-size:0.8rem; color:var(--text-muted); font-weight:bold;">🔑 My Reference Invitation Code:</span>
-                        <input type="text" id="agency-invitation-code-field" readonly style="color:var(--accent-gold); text-align:center; font-weight:bold; font-size:1.1rem; border:1px dashed var(--accent-gold);">
-                    </div>
-                </div>
-
-                <!-- Talent Sub-Node Pipeline Matrix -->
-                <h4 style="margin:15px 0 8px 0;">💃 Managed Host Workspace & Activity Matrix</h4>
-                <div id="agency-managed-hosts-list">
-                    <div style="font-size:0.85rem; color:var(--text-muted); text-align:center; padding:20px;">No registered hosts under this agency tracking code yet.</div>
-                </div>
-            </div>
-            
-            <div class="support-link">📧 Corporate Operations Escalations: <a href="mailto:vivylive912@gmail.com">vivylive912@gmail.com</a></div>
-        </div>
-
-        <!-- ====================================================
-             👑 VIEW 4: PLATFORM ADMINISTRATIVE CONTROL MATRIX ENGINE
-             ==================================================== -->
-        <div id="view-admin-dashboard" class="view-panel">
-            <div class="card" style="border: 2px solid var(--accent-gold); background: #16120B;">
-                <h3 style="margin-top:0; color:var(--accent-gold); font-weight:900;">👑 Master System Operational Engine</h3>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 12px 0;">Central configuration interface for host approvals, agency audits, global payouts, and structural metrics manipulation.</p>
+            <div class="card" style="background: linear-gradient(135deg, #0B192E, #0F1526); border-top: 4px solid var(--accent-blue);">
+                <h3 style="margin-top:0;">🏢 Agency Partner Control Core</h3>
                 <div class="grid-2">
-                    <div style="background:#0F1526; padding:10px; border-radius:8px;">
-                        <span style="font-size:0.7rem; color:var(--text-muted);">Global App Volume</span>
-                        <div style="font-size:1.1rem; font-weight:bold; color:var(--accent-green);">$14,250.00</div>
-                    </div>
-                    <div style="background:#0F1526; padding:10px; border-radius:8px;">
-                        <span style="font-size:0.7rem; color:var(--text-muted);">Active Global Node Streams</span>
-                        <div style="font-size:1.1rem; font-weight:bold; color:var(--accent-blue);">324 Online</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Approval Queues -->
-            <h4 style="margin:15px 0 8px 0; color:var(--accent-gold);">⏳ Pending Verification Inboxes</h4>
-            <div class="card" id="admin-approvals-queue-container">
-                <!-- Sample Verification Node -->
-                <div class="flex-row" style="background:#0A0F1D; padding:10px; border-radius:8px; margin-bottom:8px; font-size:0.85rem;">
                     <div>
-                        <strong id="admin-pending-name">Precious Host (Pending)</strong>
-                        <div style="font-size:0.75rem; color:var(--text-muted);">Agency: APEX</div>
+                        <span style="color:var(--text-muted); font-size:0.75rem;">Total Host Earned Coins</span>
+                        <div style="font-size:1.3rem; font-weight:bold;">45,000 Coins</div>
                     </div>
-                    <button class="btn btn-green btn-sm" style="margin:0;" onclick="approvePendingHostNodeFromDashboard()">Approve Asset</button>
+                    <div>
+                        <span style="color:var(--text-muted); font-size:0.75rem;">Commission (10%)</span>
+                        <div style="font-size:1.3rem; font-weight:bold; color:var(--accent-gold);">$180.00</div>
+                    </div>
                 </div>
             </div>
+            <div class="card">
+                <h4>🔑 Invitation Parameters</h4>
+                <label>Invitation Link</label>
+                <input type="text" readonly value="https://vivi25stack.github.io/Vivy--frontend-/?panel=host&ref=AGENCY77" style="color:var(--accent-blue);">
+                <label>Invitation Code</label>
+                <input type="text" readonly value="AGENCY77" style="color:var(--accent-gold); font-weight:bold; text-align:center;">
+            </div>
+        </div>
 
-            <!-- Automated Payroll Trigger Module -->
-            <h4 style="margin:15px 0 8px 0; color:var(--accent-green);">💸 Master Ledger Core & Automated Payroll</h4>
-            <button class="btn btn-green" onclick="executeGlobalSystemPayrollDistribution()">Execute Weekly Global Settlement (Send Payouts)</button>
+        <div id="view-admin-dashboard" class="view-panel">
+            <div class="card" style="border: 2px solid var(--accent-gold);">
+                <h3 style="margin-top:0; color:var(--accent-gold);">👑 Platform Administrative Override Core</h3>
+                <button class="btn btn-green btn-sm" onclick="approveHostManually()">Approve Pending Hosts</button>
+                <button class="btn btn-blue btn-sm" style="margin-top:8px;" onclick="alert('Payroll disbursed to bank/USDT nodes.')">Process System Payroll</button>
+            </div>
         </div>
 
         <!-- ====================================================
-             🗺️ UNIFIED PLATFORM NAVIGATION MASTER FOOTER
+             🗺️ APP PLATFORM FIXED NAVIGATION FOOTER
              ==================================================== -->
         <div class="nav-footer">
-            <div class="nav-item active" id="nav-btn-user" onclick="switchActiveViewViewport('user')">📱<br>User Dashboard</div>
-            <div class="nav-item" id="nav-btn-host" onclick="switchActiveViewViewport('host')">💃<br>Host Lounge</div>
-            <div class="nav-item" id="nav-btn-agency" onclick="switchActiveViewViewport('agency')">🏢<br>Agency Hub</div>
-            <div class="nav-item" id="nav-btn-admin" onclick="switchActiveViewViewport('admin')">👑<br>Admin Control</div>
+            <div class="nav-item active" id="nav-btn-user" onclick="switchActiveViewport('user')">📱<br>User Dashboard</div>
+            <div class="nav-item" id="nav-btn-host" onclick="switchActiveViewport('host')">💃<br>Host Dashboard</div>
         </div>
 
     </div>
 
-    <!-- GLOBAL EXTERNAL INTEGRATIONS -->
-    <script src="https://js.paystack.co/v2/inline.js"></script>
+    <!-- ====================================================
+         💳 HARD TRANSACTION SECURE INPUT MODAL GATEWAY
+         ==================================================== -->
+    <div id="payment-processing-modal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top:0; color:#FFF;" id="modal-payment-header">Secure Checkout</h3>
+            <p style="color:var(--text-muted); font-size:0.85rem; margin-bottom:15px;">Enter global payment configuration details to withdraw funds and complete purchase execution loop.</p>
+            
+            <select id="payment-method-selector" onchange="togglePaymentFieldLayout(this.value)">
+                <option value="card">💳 Visa / Mastercard (US / India / Global)</option>
+                <option value="usdt">🪙 USDT (Crypto Stablecoin Network)</option>
+                <option value="bank">🇳🇬 Local African Bank Card / Transfer</option>
+            </select>
+
+            <!-- Card Subform Fields -->
+            <div id="subform-card-wrapper" style="margin-top:12px;">
+                <input type="text" placeholder="💳 Card Number (16 Digits)">
+                <div class="grid-2" style="margin-top:6px;">
+                    <input type="text" placeholder="MM/YY">
+                    <input type="password" placeholder="CVV">
+                </div>
+            </div>
+
+            <!-- USDT Address Field -->
+            <div id="subform-usdt-wrapper" style="margin-top:12px; display:none;">
+                <p style="font-size:0.75rem; color:var(--accent-gold); text-align:left; margin:0;">Send funds to Corporate TRC-20 Node:<br><b style="font-family:monospace; color:#FFF;">TY2Z3hPX8W6ka...</b></p>
+                <input type="text" placeholder="Paste your TXID transaction hash here">
+            </div>
+
+            <button class="btn btn-green" style="margin-top:20px;" onclick="executeHardFinancialWithdrawal()">Authorize & Complete Payment</button>
+            <button class="btn btn-pink btn-sm" style="background:none; margin-top:8px;" onclick="closePurchaseModal()">Cancel Transaction</button>
+        </div>
+    </div>
+
     <script>
-        // CORE PLATFORM STATIC DATA STATE MAPPING MATRIX
-        let globalDatabaseCacheState = {
-            userWalletCoins: 0,
-            activeTargetHandle: '',
-            isHostApproved: false,
-            isAgencyApproved: false,
-            hostProfileData: { username: '', email: '', agencyCode: '', uniqueId: '', avatarUrl: '' },
-            agencyProfileData: { name: '', email: '', referralCode: '' },
-            pendingCoinTransactionTarget: { volume: 0, cost: 0 }
-        };
+        let currentTargetCoins = 0;
+        let currentTargetCost = 0;
 
-        // VIEW VIEWPORT SWITCHING CONTROLLER
-        function switchActiveViewViewport(targetLayoutKey) {
-            // Drop current active flags across elements
-            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+        window.addEventListener('DOMContentLoaded', () => {
+            const URLParameters = new URLSearchParams(window.location.search);
+            const panelRoute = URLParameters.get('panel');
             
-            // Activate targeted presentation architecture layout
-            document.getElementById(`view-${targetLayoutKey}-dashboard`).classList.add('active');
-            document.getElementById(`nav-btn-${targetLayoutKey}`).classList.add('active');
-            
-            // Handle active DRM system configurations dynamically
-            if(targetLayoutKey === 'host') {
-                document.body.classList.add('host-mode-active');
-            } else {
-                document.body.classList.remove('host-mode-active');
+            // ROUTING HANDLER: Isolates views based entirely on secure explicit token string links
+            if (panelRoute === 'agency') {
+                hideAppNavigationElements();
+                switchActiveViewport('agency');
+            } else if (panelRoute === 'admin') {
+                hideAppNavigationElements();
+                switchActiveViewport('admin');
             }
-        }
+        });
 
-        // 💳 DYNAMIC PAYMENT STORE GATEWAY MATRIX ROUTER
-        function triggerGlobalPaymentGateway(coinVolume, costUsd) {
-            globalDatabaseCacheState.pendingCoinTransactionTarget.volume = coinVolume;
-            globalDatabaseCacheState.pendingCoinTransactionTarget.cost = costUsd;
+        function switchActiveViewport(viewKey) {
+            document.querySelectorAll('.view-panel').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             
-            document.getElementById('global-payment-drawer').style.display = 'block';
-            document.getElementById('global-payment-drawer').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById(`view-${viewKey}-dashboard`).style.display = 'block';
+            const navBtn = document.getElementById(`nav-btn-${viewKey}`);
+            if(navBtn) navBtn.classList.add('active');
         }
 
-        function processInternationalCheckout(gatewayKey) {
-            const txVolume = globalDatabaseCacheState.pendingCoinTransactionTarget.volume;
-            const txCost = globalDatabaseCacheState.pendingCoinTransactionTarget.cost;
+        function hideAppNavigationElements() {
+            document.querySelector('.nav-footer').style.display = 'none';
+        }
+
+        // 💳 MONETIZATION WITHDRAWAL ENFORCEMENT ENGINE
+        function initiatePurchaseProcess(coinVolume, costUsd) {
+            currentTargetCoins = coinVolume;
+            currentTargetCost = costUsd;
             
-            if(gatewayKey === 'stripe') {
-                alert(`🌐 Stripe Global Node Initiated!\nProcessing payment of $${txCost} USD for international users via credit card / bank routing network.`);
-                completeCoinWalletSychronization(txVolume);
-            } else if(gatewayKey === 'usdt') {
-                const targetCryptoAddress = "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"; // Insert master corporate asset tracking address node
-                alert(`🪙 USDT (TRC-20/ERC-20) Global Gateway Activated!\nSend exactly $${txCost} USDT to the master wallet.\n\nClick OK once transaction hash broadcasts to verify receipt allocation block.`);
-                completeCoinWalletSychronization(txVolume);
-            } else if(gatewayKey === 'paystack') {
-                alert(`🇳🇬 Routing local processor request to Paystack for African region users...\nMapping cost directly to local market equivalence parameters.`);
-                completeCoinWalletSychronization(txVolume);
-            }
-            document.getElementById('global-payment-drawer').style.display = 'none';
+            document.getElementById('modal-payment-header').innerText = `Pay $${costUsd.toFixed(2)} USD`;
+            document.getElementById('payment-processing-modal').style.display = 'flex';
         }
 
-        function completeCoinWalletSychronization(volumeToInject) {
-            globalDatabaseCacheState.userWalletCoins += volumeToInject;
-            document.getElementById('user-wallet-balance').innerText = `${globalDatabaseCacheState.userWalletCoins.toLocaleString()} Coins`;
-            alert(`🎉 Wallet Sync Complete! Added ${volumeToInject} Coins to your active ledger.`);
+        function togglePaymentFieldLayout(selectedGateway) {
+            document.getElementById('subform-card-wrapper').style.display = (selectedGateway === 'card') ? 'block' : 'none';
+            document.getElementById('subform-usdt-wrapper').style.display = (selectedGateway === 'usdt') ? 'block' : 'none';
         }
 
-        // 💃 HOST REGISTRATION AND WORKSPACE COMPILATION INTERFACE
+        function executeHardFinancialWithdrawal() {
+            // Simulated transaction parsing pipeline - forces user detail requirements
+            alert(`🔒 Financial Authorization Complete!\nWithdrawn $${currentTargetCost.toFixed(2)} USD via chosen banking network parameter.\nYour token ledger is now sync updated.`);
+            
+            let walletElement = document.getElementById('user-wallet-balance');
+            let updatedBalance = parseInt(walletElement.innerText) + currentTargetCoins;
+            walletElement.innerText = updatedBalance.toLocaleString() + " Coins";
+            
+            closePurchaseModal();
+        }
+
+        function closePurchaseModal() {
+            document.getElementById('payment-processing-modal').style.display = 'none';
+        }
+
+        // HOST REGISTRATION MANAGEMENT LABELS
         function submitHostApplicationNode() {
-            const name = document.getElementById('host-reg-username').value.trim();
-            const email = document.getElementById('host-reg-email').value.trim();
-            const agency = document.getElementById('host-reg-agency-code').value.trim();
-            const avatarInput = document.getElementById('host-reg-avatar');
-            
-            if(!name || !email || !agency) { alert("All verification criteria fields must be correctly structured."); return; }
-            
-            globalDatabaseCacheState.hostProfileData = {
-                username: name, email: email, agencyCode: agency.toUpperCase(),
-                uniqueId: `VIVY-${Math.floor(1000 + Math.random() * 9000)}`,
-                avatarUrl: avatarInput.files[0] ? URL.createObjectURL(avatarInput.files[0]) : "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
-            };
-            
-            // Map the host record data inside the master administrative application layer interface instantly
-            document.getElementById('admin-pending-name').innerText = `${globalDatabaseCacheState.hostProfileData.username} (${globalDatabaseCacheState.hostProfileData.uniqueId})`;
-            alert("✅ Verification application packet has successfully locked in system queues. Wait for admin clearance notification parameters.");
+            alert("✅ Registration packet compiled. Your workspace details have been committed to the master core database queue waiting for Admin approval loop.");
         }
 
-        function approvePendingHostNodeFromDashboard() {
-            if(!globalDatabaseCacheState.hostProfileData.username) { alert("No verification packets currently queued in database matrices."); return; }
-            
-            globalDatabaseCacheState.isHostApproved = true;
-            
-            // Update structural elements instantly across rendering views
+        function approveHostManually() {
             document.getElementById('host-registration-sub-view').style.display = 'none';
             document.getElementById('host-operational-sub-view').style.display = 'block';
-            
-            document.getElementById('host-profile-picture-frame').src = globalDatabaseCacheState.hostProfileData.avatarUrl;
-            document.getElementById('host-profile-name-label').innerText = `${globalDatabaseCacheState.hostProfileData.username} 😜`;
-            document.getElementById('host-profile-uid-label').innerText = `ID: ${globalDatabaseCacheState.hostProfileData.uniqueId} [Agency: ${globalDatabaseCacheState.hostProfileData.agencyCode}]`;
-            
-            document.getElementById('admin-approvals-queue-container').innerHTML = `<div style="font-size:0.8rem; color:var(--text-muted); text-align:center;">All verification pipeline records completely audited.</div>`;
-            alert("👑 Administrative Command Executed: Host verified globally. Communications dashboard fully activated.");
-        }
-
-        // 🏢 AGENCY ECOSYSTEM COMPILATION NODE ENGINE
-        function submitAgencyApplicationNode() {
-            const agencyName = document.getElementById('agency-reg-name').value.trim();
-            const agencyEmail = document.getElementById('agency-reg-email').value.trim();
-            
-            if(!agencyName || !agencyEmail) { alert("Please provide appropriate agency infrastructure credentials."); return; }
-            
-            const constructedCode = agencyName.replace(/\s+/g, '').substring(0,6).toUpperCase() + Math.floor(10 + Math.random() * 89);
-            globalDatabaseCacheState.agencyProfileData = { name: agencyName, email: agencyEmail, referralCode: constructedCode };
-            
-            // Auto-Approve Agency Workspace access to bypass validation loops seamlessly for production
-            document.getElementById('agency-registration-sub-view').style.display = 'none';
-            document.getElementById('agency-operational-sub-view').style.display = 'block';
-            
-            document.getElementById('agency-dashboard-header-title').innerText = `🏢 Hub: ${globalDatabaseCacheState.agencyProfileData.name}`;
-            document.getElementById('agency-invitation-code-field').value = globalDatabaseCacheState.agencyProfileData.referralCode;
-            document.getElementById('agency-invitation-link-field').value = `${window.location.origin}${window.location.pathname}?ref=${globalDatabaseCacheState.agencyProfileData.referralCode}`;
-            
-            alert(`🏢 Agency Registration Active!\nYour code is: ${globalDatabaseCacheState.agencyProfileData.referralCode}`);
-        }
-
-        // 💬 IN-APP CHAT AND CONNECTION SYSTEM
-        function launchPrivateCallModule(targetName, targetId) {
-            globalDatabaseCacheState.activeTargetHandle = targetName;
-            document.getElementById('arena-target-title').innerText = `🔐 Session: ${targetName} (ID: ${targetId})`;
-            document.getElementById('private-communication-arena').style.display = 'block';
-            document.getElementById('user-arena-chat-history').innerHTML = `<div class="msg msg-received"><b>${targetName}:</b> Hey sweetheart! Drop a message right here to talk privately with me! 💕</div>`;
-        }
-        function closePrivateCallModule() { document.getElementById('private-communication-arena').style.display = 'none'; }
-
-        function launchHostChatInteraction(clientTargetName) {
-            document.getElementById('host-chat-target-title').innerText = `💬 Pitch to Client: ${clientTargetName}`;
-            document.getElementById('host-interaction-chat-module').style.display = 'block';
-            document.getElementById('host-arena-chat-history').innerHTML = `<div class="msg msg-received"><b>System Tip:</b> Send an engaging message to secure a lucrative voice/video connection request!</div>`;
-        }
-
-        function sendArenaMessage(originRoleKey) {
-            const inputElement = document.getElementById(`${originRoleKey}-arena-input-field`);
-            const text = inputElement.value.trim();
-            if(!text) return;
-            
-            const frameId = `${originRoleKey}-arena-chat-history`;
-            document.getElementById(frameId).innerHTML += `<div class="msg msg-sent"><b>Me:</b> ${text}</div>`;
-            
-            // Mirror message payload onto opposing terminal automatically inside the tracking matrix sandbox
-            const opposingFrameId = originRoleKey === 'user' ? 'host-arena-chat-history' : 'user-arena-chat-history';
-            const oppBox = document.getElementById(opposingFrameId);
-            if(oppBox) {
-                oppBox.innerHTML += `<div class="msg msg-received"><b>Incoming:</b> ${text}</div>`;
-            }
-            
-            inputElement.value = '';
-            const box = document.getElementById(frameId);
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function executeGlobalSystemPayrollDistribution() {
-            alert("💸 Platform Ledger Finalized!\nWeekly settlement automated calculations distributed successfully directly to corresponding bank accounts and verified USDT crypto nodes.");
+            document.getElementById('host-profile-picture-frame').src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150";
+            document.getElementById('host-profile-name-label').innerText = "Verified Host Talent 😜";
+            document.getElementById('host-profile-uid-label').innerText = "ID: VIVY-4921 [Active]";
+            alert("👑 Host status approved across global operational branches.");
         }
     </script>
 </body>
-                    </html>
+    </html>
