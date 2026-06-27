@@ -214,8 +214,8 @@
             const amountNaira = document.getElementById('purchase-naira-amount').value;
             const paystackCheckoutBroker = new PaystackPop();
             
-            paystackCheckoutBroker.newTransaction({
-                key: 'pk_live_...', // ⚠️ Paste your actual live public string parameter code directly here!
+            paystackCheckoutBroker.newTransaction()
+                key: 'pk_live_...', // pk_live_fb16be027bb5f97047135db78046d6c9249912b3 
                 email: 'billing-node@vivylive.app',
                 amount: amountNaira * 100, // Paystack maps inputs securely in Kobo subunits
                 metadata: {
