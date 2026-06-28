@@ -1,4 +1,4 @@
-name: Build Android APk
+name: Build Android APK
 on:
   workflow_dispatch:
 
@@ -6,68 +6,129 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Capacitor Core & CLI
+      - name: Create Clean Android Structure
         run: |
-          npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
+          mkdir -p app/src/main/java/com/vivylive/app
+          mkdir -p app/src/main/res/values
 
-      - name: Configure Vivy App Links
+      - name: Write Android Manifest with Camera Permissions
         run: |
-          cat << 'EOF' > capacitor.config.json
-          {
-            "appId": "com.vivylive.app",
-            "appName": "VivyLive",
-            "webDir": "www",
-            "server": {
-              "url": "https://vivi25stack.github.io/Vivy--frontend-/",
-              "androidScheme": "https"
-            }
-          }
-          EOF
-          mkdir www
-          echo "<html><body>Redirecting...</body></html>" > www/index.html
-
-      - name: Create Native Android Project Framework
-        run: npx cap add android
-
-      - name: Inject WebRTC Camera and Microphone Permissions
-        run: |
-          cd android/app/src/main
-          cat << 'EOF' > ManifestPatch.xml
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+          cat << 'EOF' > app/src/main/AndroidManifest.xml
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.vivylive.app">
               <uses-permission android:name="android.permission.INTERNET" />
               <uses-permission android:name="android.permission.CAMERA" />
               <uses-permission android:name="android.permission.RECORD_AUDIO" />
               <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+              <application android:label="VivyLive" android:theme="@style/Theme.AppCompat.NoActionBar">
+                  <activity android:name=".MainActivity" android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
           </manifest>
           EOF
-          
-          # Safely inject permissions right above the application tag
-          sed -i '/<application/r ManifestPatch.xml' AndroidManifest.xml
-          cd ../../../..
 
-      - name: Build Final Android APK
+      - name: Write MainActivity with WebRTC Engine Customizations
         run: |
-          cd android
-          chmod +x ./gradlew
-          ./gradlew assembleDebug
+          cat << 'EOF' > app/src/main/java/com/vivylive/app/MainActivity.java
+          package com.vivylive.app;
 
-      - name: Upload Finished APK
+          import android.Manifest;
+          import android.os.Bundle;
+          import android.webkit.PermissionRequest;
+          import android.webkit.WebChromeClient;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          import androidx.appcompat.app.AppCompatActivity;
+          import androidx.core.app.ActivityCompat;
+
+          public class MainActivity extends AppCompatActivity {
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  WebView webView = new WebView(this);
+                  setContentView(webView);
+                  
+                  webView.getSettings().setJavaScriptEnabled(true);
+                  webView.getSettings().setDomStorageEnabled(true);
+                  webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+                  webView.setWebViewClient(new WebViewClient());
+                  
+                  webView.setWebChromeClient(new WebChromeClient() {
+                      @Override
+                      public void onPermissionRequest(PermissionRequest request) {
+                          request.grant(request.getResources());
+                      }
+                  });
+                  
+                  webView.loadUrl("https://vivi25stack.github.io/Vivy--frontend-/");
+                  ActivityCompat.requestPermissions(this, new String[]{
+                      Manifest.permission.CAMERA, 
+                      Manifest.permission.RECORD_AUDIO
+                  }, 1);
+              }
+          }
+          EOF
+
+      - name: Write Android Theme Configuration
+        run: |
+          cat << 'EOF' > app/src/main/res/values/styles.xml
+          <resources>
+              <style name="Theme.AppCompat.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar"/>
+          </resources>
+          EOF
+
+      - name: Build Root Project Scripts
+        run: |
+          cat << 'EOF' > settings.gradle
+          include ':app'
+          EOF
+          cat << 'EOF' > build.gradle
+          buildscript {
+              repositories { google(); mavenCentral() }
+              dependencies { classpath 'com.android.tools.build:gradle:8.2.0' }
+          }
+          allprojects {
+              repositories { google(); mavenCentral() }
+          }
+          EOF
+          cat << 'EOF' > app/build.gradle
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'com.vivylive.app'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.vivylive.app"
+                  minSdk 24
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+          }
+          dependencies {
+              implementation 'androidx.appcompat:appcompat:1.6.1'
+          }
+          EOF
+
+      - name: Initialize Gradle Wrapper
+        run: gradle wrapper --gradle-version 8.2
+
+      - name: Compile Application APK File
+        run: ./gradlew assembleDebug
+
+      - name: Export Finished APK Package File
         uses: actions/upload-artifact@v4
         with:
-          name: VivyLive-App
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: VivyLive-Package
+          path: app/build/outputs/apk/debug/app-debug.apk
