@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="surface-security" content="disable-capture">
     <meta name="viewport-fit" content="cover">
-    <title>VivyLive Global Hub</title>
+    <title>VivyLive</title>
     
     <script src="https://js.paystack.co/v2/inline.js"></script>
     
@@ -71,18 +71,25 @@
 
     <div class="app-container">
 
-        <!-- Universal Public Gateway: Users & Hosts Share This Portal -->
         <div id="view-auth-gateway" class="view-panel active">
+            
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 24px 0;">
+                <div style="position: relative; width: 90px; height: 90px; background: linear-gradient(135deg, #FF2D55 0%, #3B82F6 100%); border-radius: 28px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(255, 45, 85, 0.35); border: 2px solid rgba(255, 255, 255, 0.1);">
+                    <span style="font-size: 2.8rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🌐</span>
+                    <div style="position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; background-color: #22C55E; border-radius: 50%; border: 3px solid #060913; box-shadow: 0 0 8px #22C55E;"></div>
+                </div>
+                <h1 style="font-size: 1.8rem; font-weight: 900; margin: 12px 0 2px 0; background: linear-gradient(to right, #FFFFFF, #FF2D55); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;">VivyLive</h1>
+                <span style="font-size: 0.75rem; font-weight: 700; color: #64748B; letter-spacing: 2px; text-transform: uppercase;">Global Node Engine</span>
+            </div>
+
             <div class="card" style="text-align: center;">
-                <h2 style="color: var(--accent-pink); margin-top: 0;">🌐 VivyLive Public Hub</h2>
-                <p style="color: var(--text-muted); font-size: 0.85rem;">Secure dynamic authentication nodes</p>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0;">Secure dynamic authentication nodes</p>
                 <div class="grid-2" style="margin-top: 20px;">
                     <button class="btn btn-pink" onclick="toggleAuthSubForm('user')">📱 User Portal</button>
                     <button class="btn btn-green" onclick="toggleAuthSubForm('host')">💃 Host Lounge</button>
                 </div>
             </div>
 
-            <!-- Client User Authentication Card Module -->
             <div id="auth-subform-user" class="card" style="display: none;">
                 <h3 id="user-auth-title">📱 User Login</h3>
                 <div id="user-reg-fields" style="display:none;">
@@ -101,7 +108,6 @@
                 </div>
             </div>
 
-            <!-- Host Authentication Card Module -->
             <div id="auth-subform-host" class="card" style="display: none;">
                 <h3 id="host-auth-title">💃 Host Login</h3>
                 <div id="host-reg-fields" style="display:none;">
@@ -123,7 +129,6 @@
             </div>
         </div>
 
-        <!-- Secret Gateway Entry Form: Shared for URL Parameter Injections (?panel=admin / ?panel=agency) -->
         <div id="view-secret-gateway" class="view-panel">
             <div class="card">
                 <h3 id="secret-gateway-title" style="color:var(--accent-gold);">🔒 Secured Portal Validation Required</h3>
@@ -144,7 +149,6 @@
             </div>
         </div>
 
-        <!-- User Core Viewport -->
         <div id="view-user-dashboard" class="view-panel">
             <div class="card" style="background: linear-gradient(135deg, #171126, #0F1526); border-left: 4px solid var(--accent-pink);">
                 <div class="flex-row">
@@ -184,7 +188,6 @@
             <div style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted);">📧 Help Core: vivylive912@gmail.com</div>
         </div>
 
-        <!-- Host Lounge Viewport -->
         <div id="view-host-dashboard" class="view-panel">
             <div class="card" style="border-left: 4px solid var(--accent-green); background: linear-gradient(135deg, #0A1A14, #0F1526);">
                 <div class="flex-row">
@@ -205,7 +208,6 @@
             <div style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted);">📧 Help Core: vivylive912@gmail.com</div>
         </div>
 
-        <!-- Management Agency Dashboard Core Module -->
         <div id="view-agency-dashboard" class="view-panel">
             <div class="card" style="background: linear-gradient(135deg, #0B192E, #0F1526); border-top: 4px solid var(--accent-blue);">
                 <h3 style="margin-top:0;" id="agency-headline-title">Agency Control Grid</h3>
@@ -238,7 +240,6 @@
             </div>
         </div>
 
-        <!-- Hidden Global Administrative Command Center Override -->
         <div id="view-admin-dashboard" class="view-panel">
             <div class="card" style="border: 2px solid var(--accent-gold); background: #151006;">
                 <h3 style="margin-top:0; color:var(--accent-gold);">👑 High-Level System Admin Command Override</h3>
@@ -277,7 +278,6 @@
             <button class="btn btn-blue btn-sm" onclick="logOutSession()">Secure Exit Admin</button>
         </div>
 
-        <!-- Contextual Navigation Matrix Bar -->
         <div class="nav-footer" id="main-navigation-navbar" style="display: none;">
             <div class="nav-item active" id="nav-btn-user" onclick="switchActiveViewport('user-dashboard')">📱<br>Client Feed</div>
             <div class="nav-item" id="nav-btn-host" onclick="switchActiveViewport('host-dashboard')">💃<br>Talent Hub</div>
@@ -285,7 +285,6 @@
 
     </div>
 
-    <!-- Universal Communication Modals Setup -->
     <div id="host-messenger-modal" class="modal-overlay">
         <div class="modal-box" style="text-align: left;">
             <h3 style="margin-top:0;" id="messenger-target-name">Chat Connection</h3>
@@ -296,7 +295,6 @@
         </div>
     </div>
 
-    <!-- Live Encrypted Stream Modal Window -->
     <div id="video-call-room-modal" class="modal-overlay">
         <div class="modal-box">
             <div class="alert-banner" id="live-policy-tracker" style="display:none;">⚠️ Policy warning framework operational</div>
@@ -416,7 +414,9 @@
             if(userAuthMode === 'register') {
                 if(db.users.find(u => u.email === email)) { alert("❌ Email signature exists inside global logs. Please select Login mode."); return; }
                 const name = document.getElementById('user-auth-name').value || "Client User";
-                const userObj = { name, email, pass, uid: "VIVY-" + Math.floor(1000 + Math.random() * 9000), coins: 500 };
+                
+                // FIXED: Initial account tokens mapped directly to 0 Coins instead of 500
+                const userObj = { name, email, pass, uid: "VIVY-" + Math.floor(1000 + Math.random() * 9000), coins: 0 };
                 db.users.push(userObj); saveState();
                 curUser = userObj;
             } else {
