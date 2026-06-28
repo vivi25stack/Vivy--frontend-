@@ -49,7 +49,7 @@ jobs:
       - name: Create MainActivity containing WebRTC WebChromeClient
         run: |
           cat << 'EOF' > android/app/src/main/java/com/vivy/callingapp/MainActivity.java
-          package com.vivy.callingapp;
+          package com.vivy.live;
 
           import android.Manifest;
           import android.os.Bundle;
