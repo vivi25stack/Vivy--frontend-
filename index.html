@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="surface-security" content="disable-capture">
     <title>VivyLive Global Hub</title>
-    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://js.paystack.co/v2/inline.js"></script>
     <style>
         :root {
             --bg-dark: #060913;
@@ -66,7 +66,6 @@
 
     <div class="app-container">
 
-        <!-- Access Gateway -->
         <div id="view-auth-gateway" class="view-panel active">
             <div class="card" style="text-align: center;">
                 <h2 style="color: var(--accent-pink); margin-top: 0;">🌐 VivyLive Gateway</h2>
@@ -116,7 +115,6 @@
             </div>
         </div>
 
-        <!-- User Viewport -->
         <div id="view-user-dashboard" class="view-panel">
             <div class="card" style="background: linear-gradient(135deg, #171126, #0F1526); border-left: 4px solid var(--accent-pink);">
                 <div class="flex-row">
@@ -128,30 +126,23 @@
                 </div>
             </div>
 
-            <!-- Configuration Key Input Area for testing/production -->
-            <div class="card" style="padding: 10px; margin-bottom: 12px; background: #0A0F1D;">
-                <label style="margin: 0; font-size: 0.75rem;">Paystack Public Key (pk_test_... or pk_live_...)</label>
-                <input type="text" id="paystack-public-key" value="pk_test_your_public_key_here" style="padding: 8px; margin-top: 4px; font-size: 0.8rem;">
-            </div>
-
             <h3 style="margin: 15px 0 8px 0; font-size: 1.1rem;">💎 Purchase Premium Vivy Tokens</h3>
             <div class="grid-2">
-                <!-- Amounts scaled to NGN (Kobo conversion matches standard Paystack scales) -->
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="launchPaystackCheckoutEngine(250, 1000)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(250, 500)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">250 Coins</b>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦500 NGN</button>
+                </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(500, 1000)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">500 Coins</b>
                     <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦1,000 NGN</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="launchPaystackCheckoutEngine(500, 2000)">
-                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">500 Coins</b>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(1000, 2000)">
+                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,000 Coins</b>
                     <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦2,000 NGN</button>
                 </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="launchPaystackCheckoutEngine(1000, 4000)">
-                    <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,000 Coins</b>
-                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦4 $</button>
-                </div>
-                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="launchPaystackCheckoutEngine(1500, 6000)">
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px; cursor:pointer;" onclick="routeToPaystackGateway(1500, 3000)">
                     <b style="color:var(--accent-gold); font-size:1.15rem; display:block;">1,500 Coins</b>
-                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦6 $</button>
+                    <button class="btn btn-pink btn-sm" style="margin-top:8px; width:100%; font-weight:900;">₦3,000 NGN</button>
                 </div>
             </div>
 
@@ -162,7 +153,6 @@
             <div class="support-link">📧 Client Support: vivylive912@gmail.com</div>
         </div>
 
-        <!-- Host Lounge Viewport -->
         <div id="view-host-dashboard" class="view-panel">
             <div class="card" style="border-left: 4px solid var(--accent-green); background: linear-gradient(135deg, #0A1A14, #0F1526);">
                 <div class="flex-row">
@@ -184,7 +174,6 @@
             <div class="support-link">📧 Host Support: vivylive912@gmail.com</div>
         </div>
 
-        <!-- Agency Portal Viewport -->
         <div id="view-agency-dashboard" class="view-panel">
             <div class="card" style="background: linear-gradient(135deg, #0B192E, #0F1526); border-top: 4px solid var(--accent-blue);">
                 <h3 style="margin-top:0;" id="agency-headline-title">Agency Control Core</h3>
@@ -220,7 +209,6 @@
             </div>
         </div>
 
-        <!-- Platform Administration -->
         <div id="view-admin-dashboard" class="view-panel">
             <div class="card" style="border: 2px solid var(--accent-gold); background: #151006;">
                 <h3 style="margin-top:0; color:var(--accent-gold);">👑 Platform Administrative Override</h3>
@@ -242,7 +230,6 @@
             </div>
         </div>
 
-        <!-- Sticky Navigation Tab -->
         <div class="nav-footer" id="main-navigation-navbar" style="display: none;">
             <div class="nav-item active" id="nav-btn-user" onclick="switchActiveViewport('user-dashboard')">📱<br>User Hub</div>
             <div class="nav-item" id="nav-btn-host" onclick="switchActiveViewport('host-dashboard')">💃<br>Host Lounge</div>
@@ -250,7 +237,6 @@
 
     </div>
 
-    <!-- Host Messaging Modal -->
     <div id="host-messenger-modal" class="modal-overlay">
         <div class="modal-box" style="text-align: left;">
             <h3 style="margin-top:0;" id="messenger-target-name">Chat User</h3>
@@ -263,7 +249,6 @@
         </div>
     </div>
 
-    <!-- Video Streaming Frame Layout -->
     <div id="video-call-room-modal" class="modal-overlay">
         <div class="modal-box">
             <h3 style="margin:0; color:var(--accent-green);">🎥 Video Session Active</h3>
@@ -275,10 +260,14 @@
         </div>
     </div>
 
+    <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
     <script>
-        // System Session Memory Cache
+        // Data Store Registers
         let walletCoins = 0;
-        let authenticatedUserEmail = "client@vivylive.io"; // Default baseline fallback
+        let currentUserEmail = "guest@vivylive.io"; // Track user verification states dynamically
+        let selectedCoinsPackage = 0;
+        let selectedCostPackage = 0;
         let activeCallTimerInterval = null;
         let activeCallSecondsCounter = 0;
         let targetedChatParticipant = "";
@@ -289,10 +278,12 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const URLParameters = new URLSearchParams(window.location.search);
-            if (URLParameters.get('panel') === 'agency') {
+            const explicitPanelRoute = URLParameters.get('panel');
+            
+            if (explicitPanelRoute === 'agency') {
                 switchActiveViewport('auth-gateway');
                 toggleAuthSubForm('agency');
-            } else if (URLParameters.get('panel') === 'admin') {
+            } else if (explicitPanelRoute === 'admin') {
                 switchActiveViewport('admin-dashboard');
             } else {
                 switchActiveViewport('auth-gateway');
@@ -317,6 +308,7 @@
             document.getElementById('auth-subform-agency').style.display = (formKey === 'agency') ? 'block' : 'none';
         }
 
+        // Access Validation Control Flow
         function processUserAccountValidation() {
             const username = document.getElementById('login-user-name').value || "Client User";
             const email = document.getElementById('login-user-email').value;
@@ -327,7 +319,7 @@
                 return;
             }
             
-            authenticatedUserEmail = email; // Cache real email to bind to Paystack handler configuration
+            currentUserEmail = email; // Capture email address for Paystack transactions instance
             const generatedId = "VIVY-" + Math.floor(1000 + Math.random() * 9000);
             document.getElementById('user-display-id').innerText = `ID: ${generatedId}`;
             
@@ -338,51 +330,6 @@
             switchActiveViewport('user-dashboard');
         }
 
-        // --- DIRECT OFFICIAL PAYSTACK SDK INTEGRATION PIPELINE ---
-        function launchPaystackCheckoutEngine(coinAmount, priceInNaira) {
-            const paystackKey = document.getElementById('paystack-public-key').value;
-            
-            if (!paystackKey || paystackKey.includes("your_public_key_here")) {
-                alert("❌ Integration Error: Please insert your valid Paystack API Public Key inside the setup field block.");
-                return;
-            }
-
-            // Paystack measures amounts in lowest local currency factors (Kobo for Naira). 
-            // ₦1,000 NGN must be entered as 100000 kobo.
-            const totalAmountInKobo = priceInNaira * 100;
-
-            let paymentHandler = PaystackPop.setup({
-                key: paystackKey,
-                email: authenticatedUserEmail,
-                amount: totalAmountInKobo,
-                currency: "NGN",
-                ref: 'VIVY-TX-' + Math.floor((Math.random() * 100000000) + 1), // Unique Transaction Reference String
-                metadata: {
-                    custom_fields: [
-                        {
-                            display_name: "Token Reward Allocation",
-                            variable_name: "allocated_coins",
-                            value: coinAmount
-                        }
-                    ]
-                },
-                callback: function(transactionResponse) {
-                    // Triggers securely ONLY if card funds settle successfully through the financial switch core.
-                    walletCoins += coinAmount;
-                    document.getElementById('user-wallet-balance').innerText = walletCoins.toLocaleString() + " Coins";
-                    
-                    alert(`✅ Settlement Cleared!\nPaystack Ref: ${transactionResponse.reference}.\nYour wallet has been credited with ${coinAmount.toLocaleString()} Coins.`);
-                },
-                onClose: function() {
-                    alert("⚠️ Transaction canceled by client. No tokens credited.");
-                }
-            });
-
-            // Fire up Paystack's fully native, bank-secured interface framework layout
-            paymentHandler.openIframe();
-        }
-
-        // Host Account Profiles Validation
         function processHostAccountValidation() {
             const username = document.getElementById('login-host-username').value;
             const email = document.getElementById('login-host-email').value;
@@ -420,6 +367,7 @@
             switchActiveViewport('agency-dashboard');
         }
 
+        // Administrative Core Pipelines
         function renderAdminApprovalComponent() {
             const container = document.getElementById('admin-pending-approvals-queue');
             if (!currentlyPendingHostRegistration) {
@@ -440,6 +388,7 @@
         function executeAdminVerdict(isApproved) {
             if (isApproved && currentlyPendingHostRegistration) {
                 globalRegisteredHosts.push(currentlyPendingHostRegistration);
+                
                 rebuildGlobalTalentFeed();
                 appendHostToAgencyMatrix(currentlyPendingHostRegistration);
 
@@ -477,6 +426,7 @@
                     <button class="btn btn-green btn-sm" onclick="launchVideoCallModule('${host.username}', '${host.uid}')">🎥 Open Camera</button>`;
                 hostFeed.appendChild(element);
             });
+            document.getElementById('admin-active-count').innerText = globalRegisteredHosts.length;
         }
 
         function rebuildHostsActiveUserDirectory() {
@@ -491,6 +441,7 @@
                 const item = document.createElement('div');
                 item.className = 'card';
                 item.style.padding = '12px';
+                item.style.marginBottom = '8px';
                 item.innerHTML = `
                     <div class="flex-row">
                         <div><strong>${user.username} 🌐</strong> <span class="user-id-tag" style="margin-left:5px;">${user.uid}</span></div>
@@ -503,49 +454,48 @@
         function appendHostToAgencyMatrix(hostObject) {
             const tableBody = document.getElementById('agency-host-table-body');
             const row = document.createElement('tr');
-            row.innerHTML = `<td><b>${hostObject.username}</b></td><td><span class="user-id-tag">${hostObject.uid}</span></td><td style="color:var(--accent-green); font-weight:bold;">$0.00</td>`;
+            row.innerHTML = `
+                <td><b>${hostObject.username}</b></td>
+                <td><span class="user-id-tag">${hostObject.uid}</span></td>
+                <td style="color:var(--accent-green); font-weight:bold;">$0.00</td>`;
             tableBody.appendChild(row);
         }
 
-        function openChatMessengerGateway(targetName) {
-            targetedChatParticipant = targetName;
-            document.getElementById('messenger-target-name').innerText = `Chat with ${targetName}`;
-            document.getElementById('host-messenger-modal').style.display = 'flex';
-        }
+        // Official Standard Paystack Integration Pipeline
+        function routeToPaystackGateway(coins, priceNgn) {
+            // Paystack requires currency values in lowest subunit (Kobo for NGN). Multiply base amount by 100.
+            const totalSubunitAmount = priceNgn * 100; 
 
-        function dispatchHostChatMessage() {
-            const messageText = document.getElementById('messenger-input-field').value;
-            if (!messageText) return;
-            const history = document.getElementById('messenger-chat-history');
-            if(history.innerText.includes("No previous transaction history records")) history.innerHTML = '';
-            history.innerHTML += `<div style="margin-bottom:8px; text-align:right;"><span style="background:var(--accent-blue); padding:6px 10px; border-radius:12px; display:inline-block; max-width:80%; text-align:left;">${messageText}</span></div>`;
-            document.getElementById('messenger-input-field').value = '';
-        }
-
-        function closeMessengerModal() { document.getElementById('host-messenger-modal').style.display = 'none'; }
-
-        function launchVideoCallModule(hostName, hostUid) {
-            document.getElementById('video-call-room-modal').style.display = 'flex';
-            activeCallSecondsCounter = 0;
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-                .then(stream => {
-                    document.getElementById('video-canvas-element').srcObject = stream;
-                    activeCallTimerInterval = setInterval(() => {
-                        activeCallSecondsCounter++;
-                        let minutes = Math.floor(activeCallSecondsCounter / 60).toString().padStart(2, '0');
-                        let seconds = (activeCallSecondsCounter % 60).toString().padStart(2, '0');
-                        document.getElementById('call-room-timer').innerText = `Duration: ${minutes}:${seconds}`;
-                    }, 1000);
-                }).catch(err => {
-                    alert("⚠️ Live hardware media interface rejected or unavailable.");
-                });
-        }
-
-        function terminateVideoCallSession() {
-            clearInterval(activeCallTimerInterval);
-            let videoPlayerElement = document.getElementById('video-canvas-element');
-            if (videoPlayerElement.srcObject) { videoPlayerElement.srcObject.getTracks().forEach(track => track.stop()); }
-            document.getElementById('video-call-room-modal').style.display = 'none';
+            const paystack = new PaystackPop();
+            paystack.newTransaction({
+                key: 'pk_test_YOUR_PUBLIC_KEY_HERE', // Replace with your real Paystack Public Key
+                email: currentUserEmail,
+                amount: totalSubunitAmount,
+                currency: 'NGN',
+                metadata: {
+                    custom_fields: [
+                        {
+                            display_name: "Coins Package Bought",
+                            variable_name: "coins_package",
+                            value: coins
+                        }
+                    ]
+                },
+                onSuccess: (transaction) => {
+                    // Executed directly when authorization completes securely via Paystack
+                    console.log("Payment completed successfully! Reference: ", transaction.reference);
+                    
+                    walletCoins += coins;
+                    document.getElementById('user-wallet-balance').innerText = `${walletCoins} Coins`;
+                    alert(`💎 Transaction Verified! Successfully loaded ${coins} Coins into your wallet.`);
+                },
+                onCancel: () => {
+                    alert("❌ Transaction terminated by user.");
+                },
+                onError: (error) => {
+                    alert(`⚠️ Payment Framework Error: ${error.message}`);
+                }
+            });
         }
     </script>
 </body>
