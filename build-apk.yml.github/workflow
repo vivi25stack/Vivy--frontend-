@@ -24,18 +24,28 @@ jobs:
           
           cat << 'EOF' > build.gradle
           buildscript {
-              repositories { google(); mavenCentral() }
-              dependencies { classpath 'com.android.tools.build:gradle:8.1.0' }
+              repositories { 
+                  google()
+                  mavenCentral() 
+              }
+              dependencies { 
+                  classpath 'com.android.tools.build:gradle:8.1.0' 
+              }
           }
           allprojects {
-              repositories { google(); mavenCentral() }
+              repositories { 
+                  google()
+                  mavenCentral() 
+              }
           }
           EOF
 
       - name: Setup App Gradle Config
         run: |
           cat << 'EOF' > app/build.gradle
-          plugins { id 'com.android.application' }
+          plugins { 
+              id 'com.android.application' 
+          }
           
           android {
               namespace 'com.vivylive.app'
@@ -108,6 +118,7 @@ jobs:
                   });
                   
                   webView.loadUrl("https://vivi25stack.github.io/Vivy--frontend-/");
+                  
                   ActivityCompat.requestPermissions(this, new String[]{
                       Manifest.permission.CAMERA, 
                       Manifest.permission.RECORD_AUDIO
