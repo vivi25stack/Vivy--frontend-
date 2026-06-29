@@ -70,11 +70,15 @@
         .board-tab { flex: 1; text-align: center; padding: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer; color: var(--text-muted); border-radius: 8px; }
         .board-tab.active { background: var(--accent-pink); color: white; }
         .rank-row { display: flex; align-items: center; justify-content: space-between; background: #0A1121; padding: 10px 14px; border-radius: 12px; margin-bottom: 6px; border: 1px solid #1A2642; }
-        .rank-badge { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.8rem; font-weight: bold; }
-        .rank-1 { background: linear-gradient(135deg, #FFB800, #CCA200); color: black; }
-        .rank-2 { background: linear-gradient(135deg, #E2E8F0, #94A3B8); color: black; }
-        .rank-3 { background: linear-gradient(135deg, #B45309, #78350F); color: white; }
-        .rank-default { background: #1E293B; color: var(--text-muted); }
+        
+        .leaderboard-avatar-frame {
+            width: 38px; height: 38px; border-radius: 50%; background: #1A2238; border: 2px solid var(--accent-pink);
+            display: flex; align-items: center; justify-content: center; font-size: 1.1rem; overflow: hidden;
+        }
+        .rank-badge { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.75rem; font-weight: bold; }
+        .rank-1 { background: linear-gradient(135deg, #FFB800, #CCA200); color: black; border-color: #FFB800 !important; }
+        .rank-2 { background: linear-gradient(135deg, #E2E8F0, #94A3B8); color: black; border-color: #94A3B8 !important; }
+        .rank-3 { background: linear-gradient(135deg, #B45309, #78350F); color: white; border-color: #B45309 !important; }
     </style>
 </head>
 <body>
@@ -112,7 +116,7 @@
                 <input type="password" id="user-auth-pass" maxlength="6" placeholder="••••••">
                 
                 <div style="margin-top:14px;">
-                    <button class="btn btn-pink" id="user-primary-auth-btn" onclick="submitUserAuth('login')">Secure Sign In</button>
+                    <button class="btn btn-pink" id="user-primary-auth-btn" onclick="submitUserAuth()">Secure Sign In</button>
                     <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); cursor:pointer; margin-top:12px;" 
                        id="user-toggle-msg" onclick="toggleUserAuthMode()">Don't have an account? Register Here</p>
                 </div>
@@ -124,7 +128,7 @@
                     <label>Stage Handle Username</label>
                     <input type="text" id="host-auth-name" placeholder="Stage name...">
                     <label>Agency Invitation Identifier Code</label>
-                    <input type="text" id="host-auth-agency" placeholder="e.g. AGENCY42">
+                    <input type="text" id="host-auth-agency" placeholder="e.g. VIVY-AGC-10">
                 </div>
                 <label>Registered Email</label>
                 <input type="email" id="host-auth-email" placeholder="host@domain.com">
@@ -132,7 +136,7 @@
                 <input type="password" id="host-auth-pass" maxlength="6" placeholder="••••••">
                 
                 <div style="margin-top:14px;">
-                    <button class="btn btn-green" id="host-primary-auth-btn" onclick="submitHostAuth('login')">Access Host Dashboard</button>
+                    <button class="btn btn-green" id="host-primary-auth-btn" onclick="submitHostAuth()">Access Host Dashboard</button>
                     <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); cursor:pointer; margin-top:12px;" 
                        id="host-toggle-msg" onclick="toggleHostAuthMode()">Apply to join as a Verified Host</p>
                 </div>
@@ -153,7 +157,7 @@
                 <label>Password PIN</label>
                 <input type="password" id="agency-auth-pass" placeholder="••••••••">
                 
-                <button class="btn btn-gold" id="secret-primary-btn" onclick="submitAgencyAuth('login')">Validate Access Credentials</button>
+                <button class="btn btn-gold" id="secret-primary-btn" onclick="submitAgencyAuth()">Validate Access Credentials</button>
                 <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); cursor:pointer; margin-top:12px;" 
                    id="agency-toggle-msg" onclick="toggleAgencyAuthMode()">Register a New Management Agency</p>
             </div>
@@ -245,7 +249,10 @@
 
             <div class="card">
                 <h4>🔗 Unique Invitation Deployment Link</h4>
-                <input type="text" id="agency-link-display" readonly value="" style="color:var(--accent-blue); font-size:0.8rem;">
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="agency-link-display" readonly value="" style="color:var(--accent-blue); font-size:0.8rem; margin-top:0;">
+                    <button class="btn btn-blue btn-sm" onclick="copyAgencyLinkToClipboard()">📋 Copy</button>
+                </div>
             </div>
 
             <div class="card">
@@ -376,8 +383,17 @@
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const targetPanel = urlParams.get('panel');
+            const agencyInviteLinkCode = urlParams.get('code');
 
-            if (targetPanel === 'admin') {
+            // DEEP-LINK INTERCEPTOR ENGINE
+            if (agencyInviteLinkCode) {
+                toggleAuthSubForm('host');
+                hostAuthMode = 'register';
+                document.getElementById('host-auth-title').innerText = '💃 Host Onboarding Application';
+                document.getElementById('host-reg-fields').style.display = 'block';
+                document.getElementById('host-primary-auth-btn').innerText = 'Submit Account Application';
+                document.getElementById('host-auth-agency').value = agencyInviteLinkCode.trim().toUpperCase();
+            } else if (targetPanel === 'admin') {
                 document.getElementById('view-auth-gateway').classList.remove('active');
                 document.getElementById('secret-gateway-title').innerText = "👑 Master Admin Access Override";
                 document.getElementById('secret-primary-btn').className = "btn btn-gold";
@@ -438,18 +454,18 @@
         }
 
         function submitUserAuth() {
-            const email = document.getElementById('user-auth-email').value;
-            const pass = document.getElementById('user-auth-pass').value;
+            const email = document.getElementById('user-auth-email').value.trim();
+            const pass = document.getElementById('user-auth-pass').value.trim();
             if(!email || pass.length !== 6) { alert("❌ Insert explicit email and 6-digit passcode PIN structure."); return; }
 
             if(userAuthMode === 'register') {
-                if(db.users.find(u => u.email === email)) { alert("❌ Email signature exists inside global logs."); return; }
+                if(db.users.find(u => u.email.toLowerCase() === email.toLowerCase())) { alert("❌ Email signature exists inside global logs."); return; }
                 const name = document.getElementById('user-auth-name').value || "Client User";
                 const userObj = { name, email, pass, uid: "VIVY-" + Math.floor(1000 + Math.random() * 9000), coins: 0 };
                 db.users.push(userObj); saveState();
                 curUser = userObj;
             } else {
-                const verifiedMatch = db.users.find(u => u.email === email && u.pass === pass);
+                const verifiedMatch = db.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
                 if(!verifiedMatch) { alert("❌ Invalid credentials found in global database logs."); return; }
                 curUser = verifiedMatch;
             }
@@ -460,8 +476,8 @@
         }
 
         function submitHostAuth() {
-            const email = document.getElementById('host-auth-email').value;
-            const pass = document.getElementById('host-auth-pass').value;
+            const email = document.getElementById('host-auth-email').value.trim();
+            const pass = document.getElementById('host-auth-pass').value.trim();
             if(!email || pass.length !== 6) { alert("❌ Security signature must contain explicit structural assets."); return; }
 
             if(hostAuthMode === 'register') {
@@ -476,7 +492,7 @@
                 alert("✅ Application dispatched directly to system administrative command pipeline queue.");
                 toggleHostAuthMode(); return;
             } else {
-                const systemCheck = db.hosts.find(h => h.email === email && h.pass === pass);
+                const systemCheck = db.hosts.find(h => h.email.toLowerCase() === email.toLowerCase() && h.pass === pass);
                 if(!systemCheck) { alert("❌ Account authentication failed or onboarding still pending manual root review."); return; }
                 if(systemCheck.hardwareBan) { alert("🚫 Hardware Access Ban Implemented. Account registration revoked."); return; }
                 
@@ -502,7 +518,7 @@
         }
 
         function submitAgencyAuth() {
-            const email = document.getElementById('agency-auth-email').value;
+            const email = document.getElementById('agency-auth-email').value.trim();
             const pass = document.getElementById('agency-auth-pass').value;
 
             if(agencyAuthMode === 'register') {
@@ -515,7 +531,7 @@
                 alert("🏢 Agency profile buffered to admin approvals pipeline layer.");
                 toggleAgencyAuthMode();
             } else {
-                const matchingAgency = db.agencies.find(a => a.email === email && a.pass === pass);
+                const matchingAgency = db.agencies.find(a => a.email.toLowerCase() === email.toLowerCase() && a.pass === pass);
                 if(!matchingAgency) { alert("❌ Verification mismatch or corporate registration pending review."); return; }
                 curAgency = matchingAgency;
                 
@@ -528,7 +544,17 @@
             }
         }
 
-        // Live Communication Modal System Engine Hooks
+        function copyAgencyLinkToClipboard() {
+            const linkField = document.getElementById('agency-link-display');
+            linkField.select();
+            linkField.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(linkField.value).then(() => {
+                alert("📋 Invitation link copied to clipboard storage!");
+            }).catch(() => {
+                alert("❌ Failed to automatically copy link.");
+            });
+        }
+
         function openMessengerModal(targetUid, targetName) {
             activeTargetUid = targetUid;
             document.getElementById('messenger-target-name').innerText = `Chat with ${targetName} (${targetUid})`;
@@ -574,13 +600,11 @@
             renderChatMessages();
         }
 
-        // Host Camera State Assessment & Stream Framework Initialization
         async function triggerLiveVideoSession(targetUid, roleTitle) {
             document.getElementById('call-room-type-title').innerText = `🎥 Live Connection Status: [${roleTitle}]`;
             document.getElementById('video-call-room-modal').style.display = 'flex';
             activeCallSeconds = 0;
             
-            // CAMERA VALIDATION AND HARDWARE BINDING ROUTINE
             try {
                 localMediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
                 const videoElement = document.getElementById('video-canvas-element');
@@ -594,10 +618,10 @@
 
             callTimer = setInterval(() => {
                 activeCallSeconds++;
-                let mins = String(Math.floor(activeCallSeconds / 60)).padStart(2, '0');
+                let mins = String(Math.floor(activeCallSeconds / 30)).padStart(2, '0');
                 let secs = String(activeCallSeconds % 60).padStart(2, '0');
                 document.getElementById('call-room-timer').innerText = `Duration: ${mins}:${secs}`;
-            }, 1000);
+            }, 250);
         }
 
         function terminateCallSession() {
@@ -610,7 +634,6 @@
             alert("🔒 Call transmission channel successfully disconnected.");
         }
 
-        // Leaderboard Display Configuration Logic
         function switchBoardTimeline(tabKey) {
             activeTimelineTab = tabKey;
             document.getElementById('tab-daily').classList.toggle('active', tabKey === 'daily');
@@ -645,6 +668,9 @@
                     <div class="rank-row">
                         <div style="display:flex; align-items:center; gap:12px;">
                             <div class="rank-badge ${boardRowStyle}">${badgeText}</div>
+                            <div class="leaderboard-avatar-frame" style="border: 2px solid; border-color: inherit;">
+                                📸
+                            </div>
                             <div>
                                 <b style="font-size:0.95rem; color:#FFF;">${host.name}</b>
                                 <div style="font-size:0.7rem; color:var(--text-muted);">ID: ${host.uid}</div>
@@ -658,7 +684,6 @@
             });
         }
 
-        // Admin Core Control Subsystems
         function approveHostApplication(index) {
             let approvedHost = db.pendingHosts.splice(index, 1)[0];
             approvedHost.status = 'approved';
@@ -670,9 +695,9 @@
         }
 
         function declineHostApplication(index) {
-            let rejected = db.pendingHosts.splice(index, 1)[0];
+            db.pendingHosts.splice(index, 1);
             saveState();
-            alert(`❌ Application Rejected for: ${rejected.name}`);
+            alert(`❌ Application Rejected.`);
             refreshAdminNodeUI();
         }
 
@@ -687,7 +712,7 @@
         }
 
         function declineAgencyApplication(index) {
-            let rejected = db.pendingAgencies.splice(index, 1)[0];
+            db.pendingAgencies.splice(index, 1);
             saveState();
             alert(`❌ Corporate Agency Application Declined.`);
             refreshAdminNodeUI();
@@ -788,12 +813,11 @@
             });
         }
 
-        // Live App Online Visibility Directories Routing Loop
         function rebuildFeeds() {
             const clientFeedBox = document.getElementById('global-active-hosts-feed');
             if(clientFeedBox) {
                 clientFeedBox.innerHTML = '';
-                let liveHosts = db.hosts.filter(h => !h.hardwareBan);
+                let liveHosts = db.hosts ? db.hosts.filter(h => !h.hardwareBan) : [];
                 if(liveHosts.length === 0) {
                     clientFeedBox.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px; font-size:0.85rem;">No hosts currently online.</div>';
                 } else {
@@ -813,7 +837,7 @@
             const hostFeedBox = document.getElementById('host-active-users-directory');
             if(hostFeedBox) {
                 hostFeedBox.innerHTML = '';
-                if(db.users.length === 0) {
+                if(!db.users || db.users.length === 0) {
                     hostFeedBox.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px; font-size:0.85rem;">No online app clients active.</div>';
                 } else {
                     db.users.forEach(u => {
@@ -827,19 +851,25 @@
             }
         }
 
-        // Real Interactive Paystack Inline Core Deployment Integration
         function routeToPaystackGateway(coins, amount) {
             if(!curUser) { alert("❌ You must log in as a user profile entity first."); return; }
             
             let handler = PaystackPop.setup({
-                key: 'pk_live_fb16be027bb5f97047135db78046d6c9249912b3', // Replace with your public key token
+                key: 'pk_live_your_actual_public_key_goes_here',
                 email: curUser.email,
-                amount: amount * 100, // Converted to kobo automatically
+                amount: amount * 100, 
                 currency: 'NGN',
                 ref: 'VIVY-' + Math.floor(Math.random() * 999999999 + 1),
                 callback: function(response) {
                     alert('💳 Transaction Successful! Reference code: ' + response.reference);
-                    curUser.coins = (curUser.coins || 0) + coins;
+                    
+                    // FIXED ACCESS CORRUPTION INLINE ERROR
+                    let matchedUserIndex = db.users.findIndex(u => u.uid === curUser.uid);
+                    if(matchedUserIndex !== -1) {
+                        db.users[matchedUserIndex].coins = (db.users[matchedUserIndex].coins || 0) + coins;
+                        curUser = db.users[matchedUserIndex];
+                    }
+                    
                     db.totalCoinsProcessed = (db.totalCoinsProcessed || 0) + coins;
                     saveState();
                     document.getElementById('user-wallet-balance').innerText = `${curUser.coins} Coins`;
@@ -887,4 +917,4 @@
         }
     </script>
 </body>
-                                                                        </html>
+                                               </html>
