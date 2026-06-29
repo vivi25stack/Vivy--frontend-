@@ -51,7 +51,7 @@
         .btn-sm { padding: 6px 12px; font-size: 0.8rem; width: auto; margin-top: 0; border-radius: 8px; }
         
         .user-id-tag { background: rgba(0,0,0,0.6); padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-family: monospace; color: var(--accent-gold); }
-        .pulse-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; display: inline-block; }
+        .pulse-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; display: inline-block; box-shadow: 0 0 6px var(--accent-green); }
         .alert-banner { background: rgba(239, 68, 68, 0.15); border: 1px solid #EF4444; color: #FCA5A5; padding: 12px; border-radius: 12px; font-size: 0.85rem; margin-bottom: 12px; }
         
         .nav-footer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 500px; background: #0A0F1D; border-top: 1px solid #1E293B; display: flex; justify-content: space-around; padding: 12px 0; z-index: 999; }
@@ -61,14 +61,13 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
         .modal-box { background: #121B33; width: 100%; max-width: 400px; border-radius: 24px; border: 1px solid #243766; padding: 24px; box-sizing: border-box; text-align: center; }
         
-        #video-canvas-element { width: 100%; height: 220px; background: #111; border-radius: 16px; margin-top: 10px; object-fit: cover; border: 2px dashed var(--accent-pink); }
+        #video-canvas-element { width: 100%; height: 220px; background: #111; border-radius: 16px; margin-top: 10px; object-fit: cover; border: 2px dashed var(--accent-pink); transform: scaleX(-1); }
         .table-log { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 0.85rem; }
         .table-log th, .table-log td { padding: 8px; border-bottom: 1px solid #1E293B; }
         .table-log th { color: var(--text-muted); }
 
-        /* Leaderboard Specific Styling Extensions */
         .board-tabs { display: flex; background: #0A0F1D; border-radius: 10px; padding: 4px; margin-bottom: 12px; }
-        .board-tab { flex: 1; text-align: center; padding: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer; color: var(--text-muted); border-radius: 8px; transition: 0.2s; }
+        .board-tab { flex: 1; text-align: center; padding: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer; color: var(--text-muted); border-radius: 8px; }
         .board-tab.active { background: var(--accent-pink); color: white; }
         .rank-row { display: flex; align-items: center; justify-content: space-between; background: #0A1121; padding: 10px 14px; border-radius: 12px; margin-bottom: 6px; border: 1px solid #1A2642; }
         .rank-badge { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.8rem; font-weight: bold; }
@@ -83,17 +82,19 @@
     <div class="app-container">
 
         <div id="view-auth-gateway" class="view-panel active">
+            
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 24px 0;">
                 <div style="position: relative; width: 90px; height: 90px; background: linear-gradient(135deg, #FF2D55 0%, #3B82F6 100%); border-radius: 28px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(255, 45, 85, 0.35); border: 2px solid rgba(255, 255, 255, 0.1);">
-                    <span style="font-size: 2.8rem;">🧘</span>
-                    <div style="position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; background-color: #22C55E; border-radius: 50%; border: 3px solid #060913;"></div>
+                    <span style="font-size: 2.8rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🧘</span>
+                    <div style="position: absolute; top: -4px; right: -4px; width: 14px; height: 14px; background-color: #22C55E; border-radius: 50%; border: 3px solid #060913; box-shadow: 0 0 8px #22C55E;"></div>
                 </div>
-                <h1 style="font-size: 1.8rem; font-weight: 900; margin: 12px 0 2px 0; background: linear-gradient(to right, #FFFFFF, #FF2D55); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VivyLive</h1>
+                <h1 style="font-size: 1.8rem; font-weight: 900; margin: 12px 0 2px 0; background: linear-gradient(to right, #FFFFFF, #FF2D55); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;">VivyLive</h1>
                 <span style="font-size: 0.75rem; font-weight: 700; color: #64748B; letter-spacing: 2px; text-transform: uppercase;">Global Node Engine</span>
             </div>
 
             <div class="card" style="text-align: center;">
-                <div class="grid-2">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0;">Secure dynamic authentication nodes</p>
+                <div class="grid-2" style="margin-top: 20px;">
                     <button class="btn btn-pink" onclick="toggleAuthSubForm('user')">📱 User Portal</button>
                     <button class="btn btn-green" onclick="toggleAuthSubForm('host')">💃 Host Lounge</button>
                 </div>
@@ -109,8 +110,12 @@
                 <input type="email" id="user-auth-email" placeholder="name@domain.com">
                 <label>6-Digit Password PIN</label>
                 <input type="password" id="user-auth-pass" maxlength="6" placeholder="••••••">
-                <button class="btn btn-pink" style="margin-top:14px;" onclick="submitUserAuth()">Secure Sign In</button>
-                <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); cursor:pointer; margin-top:12px;" onclick="toggleUserAuthMode()">Register Here</p>
+                
+                <div style="margin-top:14px;">
+                    <button class="btn btn-pink" id="user-primary-auth-btn" onclick="submitUserAuth('login')">Secure Sign In</button>
+                    <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); cursor:pointer; margin-top:12px;" 
+                       id="user-toggle-msg" onclick="toggleUserAuthMode()">Don't have an account? Register Here</p>
+                </div>
             </div>
 
             <div id="auth-subform-host" class="card" style="display: none;">
@@ -119,25 +124,38 @@
                     <label>Stage Handle Username</label>
                     <input type="text" id="host-auth-name" placeholder="Stage name...">
                     <label>Agency Invitation Identifier Code</label>
-                    <input type="text" id="host-auth-agency" placeholder="e.g. VIVY-AGC-XX">
+                    <input type="text" id="host-auth-agency" placeholder="e.g. AGENCY42">
                 </div>
                 <label>Registered Email</label>
                 <input type="email" id="host-auth-email" placeholder="host@domain.com">
                 <label>6-Digit Security PIN</label>
                 <input type="password" id="host-auth-pass" maxlength="6" placeholder="••••••">
-                <button class="btn btn-green" style="margin-top:14px;" onclick="submitHostAuth()">Access Host Dashboard</button>
-                <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); cursor:pointer; margin-top:12px;" onclick="toggleHostAuthMode()">Apply to join as a Verified Host</p>
+                
+                <div style="margin-top:14px;">
+                    <button class="btn btn-green" id="host-primary-auth-btn" onclick="submitHostAuth('login')">Access Host Dashboard</button>
+                    <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); cursor:pointer; margin-top:12px;" 
+                       id="host-toggle-msg" onclick="toggleHostAuthMode()">Apply to join as a Verified Host</p>
+                </div>
             </div>
         </div>
 
         <div id="view-secret-gateway" class="view-panel">
             <div class="card">
                 <h3 id="secret-gateway-title" style="color:var(--accent-gold);">🔒 Secured Portal Validation Required</h3>
+                <div id="agency-reg-fields" style="display:none;">
+                    <label>Agency Corporate Name</label>
+                    <input type="text" id="agency-auth-name" placeholder="Enter corporate title">
+                    <label>WhatsApp Secure Contact</label>
+                    <input type="tel" id="agency-auth-phone" placeholder="+234...">
+                </div>
                 <label>Management Email</label>
                 <input type="email" id="agency-auth-email" placeholder="management@domain.com">
                 <label>Password PIN</label>
                 <input type="password" id="agency-auth-pass" placeholder="••••••••">
+                
                 <button class="btn btn-gold" id="secret-primary-btn" onclick="submitAgencyAuth('login')">Validate Access Credentials</button>
+                <p style="text-align:center; font-size:0.8rem; color:var(--text-muted); cursor:pointer; margin-top:12px;" 
+                   id="agency-toggle-msg" onclick="toggleAgencyAuthMode()">Register a New Management Agency</p>
             </div>
         </div>
 
@@ -153,14 +171,11 @@
                 <button class="btn btn-danger btn-sm" style="margin-top:10px;" onclick="logOutSession()">Logout Session</button>
             </div>
 
-            <!-- GLOBAL HIGHEST EARNERS LEADERBOARD BOARD -->
             <div class="card" style="border: 1px solid rgba(255, 184, 0, 0.2); background: linear-gradient(185deg, #111827, #0A0F1D);">
-                <h3 style="margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 6px; color: var(--accent-gold);">
-                    👑 Top Earners Board
-                </h3>
+                <h3 style="margin-top: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 6px; color: var(--accent-gold);">👑 High-Rank Leaderboard</h3>
                 <div class="board-tabs">
-                    <div class="board-tab active" id="tab-daily" onclick="switchBoardTimeline('daily')">Daily Board</div>
-                    <div class="board-tab" id="tab-weekly" onclick="switchBoardTimeline('weekly')">Weekly Board</div>
+                    <div class="board-tab active" id="tab-daily" onclick="switchBoardTimeline('daily')">Daily</div>
+                    <div class="board-tab" id="tab-weekly" onclick="switchBoardTimeline('weekly')">Weekly</div>
                 </div>
                 <div id="leaderboard-listing-container"></div>
             </div>
@@ -173,7 +188,23 @@
                 <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="routeToPaystackGateway(500, 1000)">
                     <b style="color:var(--accent-gold);">500 Coins</b><button class="btn btn-pink btn-sm" style="margin-top:4px; width:100%;">₦1,000</button>
                 </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="routeToPaystackGateway(1000, 2000)">
+                    <b style="color:var(--accent-gold);">1,000 Coins</b><button class="btn btn-pink btn-sm" style="margin-top:4px; width:100%;">₦2,000</button>
+                </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="routeToPaystackGateway(1500, 3000)">
+                    <b style="color:var(--accent-gold);">1,500 Coins</b><button class="btn btn-pink btn-sm" style="margin-top:4px; width:100%;">₦3,000</button>
+                </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="routeToPaystackGateway(5000, 6000)">
+                    <b style="color:var(--accent-gold);">5,000 Coins</b><button class="btn btn-pink btn-sm" style="margin-top:4px; width:100%;">₦6,000</button>
+                </div>
+                <div class="card" style="margin-bottom:0; text-align:center; padding:12px;" onclick="routeToPaystackGateway(10000, 12000)">
+                    <b style="color:var(--accent-gold);">10,000 Coins</b><button class="btn btn-pink btn-sm" style="margin-top:4px; width:100%;">₦12,000</button>
+                </div>
             </div>
+
+            <h3 style="margin: 25px 0 10px 0; font-size: 1.1rem;">💃 Verified Live Hosts</h3>
+            <div id="global-active-hosts-feed"></div>
+            <div style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted);">📧 Help Core: vivylive912@gmail.com</div>
         </div>
 
         <div id="view-host-dashboard" class="view-panel">
@@ -190,25 +221,92 @@
                 </div>
                 <button class="btn btn-danger btn-sm" style="margin-top:10px;" onclick="logOutSession()">Logout</button>
             </div>
+
+            <h4 style="margin:15px 0 8px 0;">📱 Online Clients Pipeline Directory</h4>
+            <div id="host-active-users-directory"></div>
+            <div style="text-align: center; font-size: 0.85rem; margin-top: 20px; color: var(--text-muted);">📧 Help Core: vivylive912@gmail.com</div>
+        </div>
+
+        <div id="view-agency-dashboard" class="view-panel">
+            <div class="card" style="background: linear-gradient(135deg, #0B192E, #0F1526); border-top: 4px solid var(--accent-blue);">
+                <h3 style="margin-top:0;" id="agency-headline-title">Agency Control Grid</h3>
+                <div class="grid-2">
+                    <div>
+                        <span style="color:var(--text-muted); font-size:0.75rem;">Aggregated Sub-Host Production</span>
+                        <div style="font-size:1.4rem; font-weight:bold; color: var(--accent-gold);" id="agency-total-balance">0 Coins</div>
+                    </div>
+                    <div>
+                        <span style="color:var(--text-muted); font-size:0.75rem;">Invitation Identifier</span>
+                        <div style="font-size:1.1rem; font-weight:bold; color:var(--accent-gold);" id="agency-code-badge">UNSET</div>
+                    </div>
+                </div>
+                <button class="btn btn-danger btn-sm" style="margin-top:10px;" onclick="logOutSession()">Logout</button>
+            </div>
+
+            <div class="card">
+                <h4>🔗 Unique Invitation Deployment Link</h4>
+                <input type="text" id="agency-link-display" readonly value="" style="color:var(--accent-blue); font-size:0.8rem;">
+            </div>
+
+            <div class="card">
+                <h4>📋 Agency Active Talent Registry</h4>
+                <table class="table-log">
+                    <thead>
+                        <tr><th>Stage Handle</th><th>Identifier Key</th><th>Accumulated Balance</th></tr>
+                    </thead>
+                    <tbody id="agency-host-table-body"></tbody>
+                </table>
+            </div>
         </div>
 
         <div id="view-admin-dashboard" class="view-panel">
             <div class="card" style="border: 2px solid var(--accent-gold); background: #151006;">
-                <h3 style="margin-top:0; color:var(--accent-gold);">👑 System Admin</h3>
-                <button class="btn btn-danger btn-sm" onclick="clearSystemDatabase()">Hard Reset DB</button>
+                <h3 style="margin-top:0; color:var(--accent-gold);">👑 High-Level System Admin Command Override</h3>
+                <div class="grid-2" style="margin-bottom: 12px;">
+                    <div style="background:rgba(0,0,0,0.3); padding:8px; border-radius:8px;">
+                        <span style="font-size:0.7rem; color:var(--text-muted);">Total Platform Coins</span>
+                        <div style="font-size:1.1rem; font-weight:bold; color:var(--accent-gold);" id="admin-vault-coins">0 Coins</div>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="clearSystemDatabase()">Hard Reset DB</button>
+                </div>
             </div>
 
-            <!-- SECURE ON-THE-FLY SIMULATION INJECTOR FOR DEMO PURPOSES -->
-            <div class="card" style="border: 1px dashed var(--accent-gold);">
-                <h4 style="margin-top:0; color: var(--accent-gold);">🛠️ Testing Board Data Injector</h4>
-                <p style="font-size:0.75rem; color:var(--text-muted); margin:0 0 10px 0;">Quickly award mock earnings to current system hosts to evaluate ranking output shifts.</p>
-                <button class="btn btn-gold btn-sm" onclick="injectMockEarningsData()">Inject Randomized Earnings</button>
+            <div class="card" style="border: 1px solid var(--accent-blue); background: #081122;">
+                <div class="flex-row">
+                    <h4 style="margin: 0; color: var(--accent-blue);">📊 System Financial Payroll Report Ledger</h4>
+                    <button class="btn btn-green btn-sm" onclick="downloadPayrollCSV()">💾 Export Report (.CSV)</button>
+                </div>
+                <table class="table-log">
+                    <thead>
+                        <tr><th>Entity Name</th><th>Account Role</th><th>Coins Pool</th><th>Payout Calc (₦)</th></tr>
+                    </thead>
+                    <tbody id="admin-payroll-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>🏢 System Registered Agencies Status Management</h3>
+                <table class="table-log">
+                    <thead><tr><th>Agency Name</th><th>Identifier Code</th><th>Total Coins</th></tr></thead>
+                    <tbody id="admin-agencies-list-table"></tbody>
+                </table>
+            </div>
+
+            <div class="card" style="border: 1px solid #EF4444;">
+                <h3 style="color:var(--accent-pink); margin-top:0;">🛡️ Active Host Performance & Penalties Command</h3>
+                <div id="admin-active-hosts-control-panel"></div>
             </div>
 
             <div class="card">
                 <h4>⏳ Host Onboarding Verification Matrix</h4>
                 <div id="admin-pending-hosts-queue"></div>
             </div>
+
+            <div class="card">
+                <h4>⏳ Agency Registration Verification Queue</h4>
+                <div id="admin-pending-agencies-queue"></div>
+            </div>
+            
             <button class="btn btn-blue btn-sm" onclick="logOutSession()">Secure Exit Admin</button>
         </div>
 
@@ -219,8 +317,31 @@
 
     </div>
 
+    <div id="host-messenger-modal" class="modal-overlay">
+        <div class="modal-box" style="text-align: left;">
+            <h3 style="margin-top:0;" id="messenger-target-name">Chat Connection</h3>
+            <div id="messenger-chat-history" style="height: 150px; background:#0A0F1D; border: 1px solid #1E293B; border-radius:12px; padding:10px; overflow-y:auto; font-size:0.85rem; margin-bottom:10px;"></div>
+            <textarea id="messenger-input-field" placeholder="Send message..." rows="2"></textarea>
+            <button class="btn btn-green" onclick="dispatchChatMessage()">Send Message</button>
+            <button class="btn btn-pink btn-sm" style="background:none; margin-top:8px; width:100%;" onclick="closeMessengerModal()">Close Interface</button>
+        </div>
+    </div>
+
+    <div id="video-call-room-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="alert-banner" id="live-policy-tracker" style="display:none;">⚠️ Policy warning framework operational</div>
+            <h3 style="margin:0; color:var(--accent-green);" id="call-room-type-title">🎥 Active Stream Connection</h3>
+            <div style="font-size:0.85rem; color:var(--text-muted); font-weight:bold; margin-top:4px;" id="call-room-timer">Duration: 00:00</div>
+            
+            <div id="stream-container-frame">
+                <video id="video-canvas-element" autoplay playsinline muted></video>
+            </div>
+            
+            <button class="btn btn-danger" style="margin-top:14px;" onclick="terminateCallSession()">Disconnect Connection Channel</button>
+        </div>
+    </div>
+
     <script>
-        // Data Structures Layer Engine Matrix
         let db = JSON.parse(localStorage.getItem('vivylive_db_v2')) || {
             users: [],
             hosts: [],
@@ -231,11 +352,11 @@
             chats: {}
         };
 
-        // Schema Fallback Patch Rule Initialization
         if (db.hosts) {
             db.hosts.forEach(h => {
                 if (h.coinsDaily === undefined) h.coinsDaily = h.coinsEarned || 0;
                 if (h.coinsWeekly === undefined) h.coinsWeekly = h.coinsEarned || 0;
+                if (h.hardwareBan === undefined) h.hardwareBan = false;
             });
         }
 
@@ -245,8 +366,12 @@
 
         let userAuthMode = 'login';
         let hostAuthMode = 'login';
-        let curUser = null, curHost = null;
-        let currentBoardTimeline = 'daily';
+        let agencyAuthMode = 'login';
+
+        let curUser = null, curHost = null, curAgency = null;
+        let callTimer = null, localMediaStream = null;
+        let activeCallSeconds = 0, activeTargetUid = null;
+        let activeTimelineTab = 'daily';
 
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -254,10 +379,24 @@
 
             if (targetPanel === 'admin') {
                 document.getElementById('view-auth-gateway').classList.remove('active');
-                switchActiveViewport('admin-dashboard');
-                refreshAdminNodeUI();
+                document.getElementById('secret-gateway-title').innerText = "👑 Master Admin Access Override";
+                document.getElementById('secret-primary-btn').className = "btn btn-gold";
+                document.getElementById('secret-primary-btn').innerText = "Validate Root Passcode";
+                document.getElementById('secret-primary-btn').setAttribute('onclick', 'executeAdminRootValidation()');
+                document.getElementById('agency-toggle-msg').style.display = 'none';
+                switchActiveViewport('secret-gateway');
+            } else if (targetPanel === 'agency') {
+                document.getElementById('view-auth-gateway').classList.remove('active');
+                document.getElementById('secret-gateway-title').innerText = "🏢 Management Agency Gateway Module";
+                document.getElementById('secret-primary-btn').className = "btn btn-blue";
+                document.getElementById('secret-primary-btn').innerText = "Validate Agency Authorization";
+                document.getElementById('secret-primary-btn').setAttribute('onclick', 'submitAgencyAuth()');
+                switchActiveViewport('secret-gateway');
             }
-            renderLeaderboardView();
+
+            window.addEventListener('blur', () => { navigator.clipboard.writeText("🚫 Screen Capture Blocked").catch(()=>{}); });
+            rebuildFeeds();
+            renderBoardDataView();
         });
 
         function switchActiveViewport(viewKey) {
@@ -274,169 +413,478 @@
         function toggleUserAuthMode() {
             userAuthMode = (userAuthMode === 'login') ? 'register' : 'login';
             document.getElementById('user-auth-title').innerText = userAuthMode === 'login' ? '📱 User Login' : '📱 New Client Registration';
+            document.getElementById('user-reg-fields').style.display = userAuthMode === 'login' ? 'none' : 'block';
+            document.getElementById('user-primary-auth-btn').innerText = userAuthMode === 'login' ? 'Secure Sign In' : 'Construct Account Profile';
         }
 
         function toggleHostAuthMode() {
             hostAuthMode = (hostAuthMode === 'login') ? 'register' : 'login';
+            document.getElementById('host-auth-title').innerText = hostAuthMode === 'login' ? '💃 Host Login' : '💃 Host Onboarding Application';
+            document.getElementById('host-reg-fields').style.display = hostAuthMode === 'login' ? 'none' : 'block';
+            document.getElementById('host-primary-auth-btn').innerText = hostAuthMode === 'login' ? 'Access Host Dashboard' : 'Submit Account Application';
+        }
+
+        function toggleAgencyAuthMode() {
+            agencyAuthMode = (agencyAuthMode === 'login') ? 'register' : 'login';
+            document.getElementById('secret-gateway-title').innerText = agencyAuthMode === 'login' ? '🏢 Management Agency Gateway Module' : '🏢 Build Corporate Agency Hub';
+            document.getElementById('agency-reg-fields').style.display = agencyAuthMode === 'login' ? 'none' : 'block';
+            document.getElementById('secret-primary-btn').innerText = agencyAuthMode === 'login' ? 'Validate Agency Authorization' : 'Submit Corporate Verification';
         }
 
         function logOutSession() {
+            curUser = null; curHost = null; curAgency = null;
+            document.getElementById('main-navigation-navbar').style.display = 'none';
             location.reload();
         }
 
         function submitUserAuth() {
             const email = document.getElementById('user-auth-email').value;
             const pass = document.getElementById('user-auth-pass').value;
-            if(!email || pass.length !== 6) { alert("❌ Insert 6-digit PIN."); return; }
+            if(!email || pass.length !== 6) { alert("❌ Insert explicit email and 6-digit passcode PIN structure."); return; }
 
             if(userAuthMode === 'register') {
+                if(db.users.find(u => u.email === email)) { alert("❌ Email signature exists inside global logs."); return; }
                 const name = document.getElementById('user-auth-name').value || "Client User";
                 const userObj = { name, email, pass, uid: "VIVY-" + Math.floor(1000 + Math.random() * 9000), coins: 0 };
                 db.users.push(userObj); saveState();
                 curUser = userObj;
             } else {
                 const verifiedMatch = db.users.find(u => u.email === email && u.pass === pass);
-                if(!verifiedMatch) { alert("❌ Invalid credentials."); return; }
+                if(!verifiedMatch) { alert("❌ Invalid credentials found in global database logs."); return; }
                 curUser = verifiedMatch;
             }
 
             document.getElementById('user-display-id').innerText = `ID: ${curUser.uid}`;
             document.getElementById('user-wallet-balance').innerText = `${curUser.coins} Coins`;
-            document.getElementById('main-navigation-navbar').style.display = 'flex';
-            renderLeaderboardView();
-            switchActiveViewport('user-dashboard');
+            rebuildFeeds(); renderBoardDataView(); switchActiveViewport('user-dashboard');
         }
 
         function submitHostAuth() {
             const email = document.getElementById('host-auth-email').value;
             const pass = document.getElementById('host-auth-pass').value;
-            if(!email || pass.length !== 6) { alert("❌ Security signature error."); return; }
+            if(!email || pass.length !== 6) { alert("❌ Security signature must contain explicit structural assets."); return; }
 
             if(hostAuthMode === 'register') {
                 const name = document.getElementById('host-auth-name').value;
                 const agencyCode = document.getElementById('host-auth-agency').value.trim().toUpperCase();
+                
+                const targetAgency = db.agencies.find(a => a.code.trim().toUpperCase() === agencyCode);
+                if(!targetAgency) { alert("❌ Assigned Agency Code does not exist or isn't approved by Admin yet."); return; }
+
                 const application = { name, email, pass, agencyCode, uid: "HOST-" + Math.floor(1000 + Math.random()*9000), coinsEarned: 0, coinsDaily: 0, coinsWeekly: 0, status: 'pending', hardwareBan: false, lastActive: Date.now() };
                 db.pendingHosts.push(application); saveState();
-                alert("✅ Application sent.");
-                location.reload();
+                alert("✅ Application dispatched directly to system administrative command pipeline queue.");
+                toggleHostAuthMode(); return;
             } else {
                 const systemCheck = db.hosts.find(h => h.email === email && h.pass === pass);
-                if(!systemCheck) { alert("❌ Account review outstanding or invalid entry."); return; }
-                curHost = systemCheck;
+                if(!systemCheck) { alert("❌ Account authentication failed or onboarding still pending manual root review."); return; }
+                if(systemCheck.hardwareBan) { alert("🚫 Hardware Access Ban Implemented. Account registration revoked."); return; }
                 
-                document.getElementById('host-profile-name-label').innerText = `💃 Host: ${curHost.name}`;
-                document.getElementById('host-profile-uid-label').innerText = `ID: ${curHost.uid}`;
-                document.getElementById('host-earnings-balance').innerText = `${curHost.coinsEarned} Coins`;
-                switchActiveViewport('host-dashboard');
+                curHost = systemCheck;
+                curHost.lastActive = Date.now(); saveState();
+                launchHostDashboardView();
             }
         }
 
-        // Leaderboard Calculation Logic Processing Engines
-        function switchBoardTimeline(type) {
-            currentBoardTimeline = type;
-            document.getElementById('tab-daily').classList.toggle('active', type === 'daily');
-            document.getElementById('tab-weekly').classList.toggle('active', type === 'weekly');
-            renderLeaderboardView();
+        function launchHostDashboardView() {
+            document.getElementById('host-profile-name-label').innerText = `💃 Host: ${curHost.name}`;
+            document.getElementById('host-profile-uid-label').innerText = `ID: ${curHost.uid} [${curHost.agencyCode}]`;
+            document.getElementById('host-earnings-balance').innerText = `${curHost.coinsEarned} Coins`;
+            rebuildFeeds();
+            switchActiveViewport('host-dashboard');
         }
 
-        function renderLeaderboardView() {
-            const container = document.getElementById('leaderboard-listing-container');
-            if(!container) return;
-            container.innerHTML = '';
+        function executeAdminRootValidation() {
+            const pass = document.getElementById('agency-auth-pass').value;
+            if(pass === "vivyrootadmin2026") {
+                refreshAdminNodeUI(); switchActiveViewport('admin-dashboard');
+            } else { alert("❌ High security command block authorization failure."); }
+        }
 
-            let hostList = db.hosts ? [...db.hosts] : [];
-            
-            // Sort array based on active timeline state mapping parameters
-            if(currentBoardTimeline === 'daily') {
-                hostList.sort((a, b) => (b.coinsDaily || 0) - (a.coinsDaily || 0));
+        function submitAgencyAuth() {
+            const email = document.getElementById('agency-auth-email').value;
+            const pass = document.getElementById('agency-auth-pass').value;
+
+            if(agencyAuthMode === 'register') {
+                const name = document.getElementById('agency-auth-name').value;
+                const phone = document.getElementById('agency-auth-phone').value;
+                if(!name || !email) { alert("❌ Essential mapping data missing."); return; }
+
+                const entry = { name, email, pass, phone, code: "VIVY-AGC-" + Math.floor(10 + Math.random()*89), uid: "AGC-" + Math.floor(100+Math.random()*899), totalPerformance: 0, status: 'pending' };
+                db.pendingAgencies.push(entry); saveState();
+                alert("🏢 Agency profile buffered to admin approvals pipeline layer.");
+                toggleAgencyAuthMode();
             } else {
-                hostList.sort((a, b) => (b.coinsWeekly || 0) - (a.coinsWeekly || 0));
+                const matchingAgency = db.agencies.find(a => a.email === email && a.pass === pass);
+                if(!matchingAgency) { alert("❌ Verification mismatch or corporate registration pending review."); return; }
+                curAgency = matchingAgency;
+                
+                document.getElementById('agency-headline-title').innerText = `🏢 ${curAgency.name} Control Grid`;
+                document.getElementById('agency-code-badge').innerText = curAgency.code;
+                document.getElementById('agency-link-display').value = `${window.location.origin}${window.location.pathname}?code=${curAgency.code}`;
+                
+                rebuildAgencyTalentRegistry();
+                switchActiveViewport('agency-dashboard');
+            }
+        }
+
+        // Live Communication Modal System Engine Hooks
+        function openMessengerModal(targetUid, targetName) {
+            activeTargetUid = targetUid;
+            document.getElementById('messenger-target-name').innerText = `Chat with ${targetName} (${targetUid})`;
+            document.getElementById('host-messenger-modal').style.display = 'flex';
+            renderChatMessages();
+        }
+
+        function closeMessengerModal() {
+            document.getElementById('host-messenger-modal').style.display = 'none';
+        }
+
+        function renderChatMessages() {
+            const historyBox = document.getElementById('messenger-chat-history');
+            historyBox.innerHTML = '';
+            if (!db.chats) db.chats = {};
+            
+            let chatKey = [ (curUser ? curUser.uid : curHost.uid), activeTargetUid ].sort().join('_');
+            let messages = db.chats[chatKey] || [];
+            
+            if(messages.length === 0) {
+                historyBox.innerHTML = `<div style="color:var(--text-muted); font-size:0.8rem; text-align:center;">No transaction messages logged.</div>`;
+                return;
+            }
+            messages.forEach(msg => {
+                historyBox.innerHTML += `<div style="margin-bottom:6px; font-size:0.85rem;"><b>${msg.sender}:</b> ${msg.text}</div>`;
+            });
+            historyBox.scrollTop = historyBox.scrollHeight;
+        }
+
+        function dispatchChatMessage() {
+            const textNode = document.getElementById('messenger-input-field');
+            if(!textNode.value.trim()) return;
+            
+            let senderName = curUser ? curUser.name : curHost.name;
+            let senderUid = curUser ? curUser.uid : curHost.uid;
+            let chatKey = [senderUid, activeTargetUid].sort().join('_');
+            
+            if(!db.chats[chatKey]) db.chats[chatKey] = [];
+            db.chats[chatKey].push({ sender: senderName, text: textNode.value.trim() });
+            saveState();
+            
+            textNode.value = '';
+            renderChatMessages();
+        }
+
+        // Host Camera State Assessment & Stream Framework Initialization
+        async function triggerLiveVideoSession(targetUid, roleTitle) {
+            document.getElementById('call-room-type-title').innerText = `🎥 Live Connection Status: [${roleTitle}]`;
+            document.getElementById('video-call-room-modal').style.display = 'flex';
+            activeCallSeconds = 0;
+            
+            // CAMERA VALIDATION AND HARDWARE BINDING ROUTINE
+            try {
+                localMediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                const videoElement = document.getElementById('video-canvas-element');
+                if (videoElement) {
+                    videoElement.srcObject = localMediaStream;
+                }
+            } catch (err) {
+                console.warn("Camera hardware stream unhandled or locked: ", err);
+                alert("⚠️ App Notice: Audio/Video device initialization failure. Operating room via mock telemetry node simulation loop framework.");
             }
 
-            if(hostList.length === 0) {
-                container.innerHTML = `<div style="text-align:center; padding:14px; color:var(--text-muted); font-size:0.85rem;">No ranking records logged yet.</div>`;
+            callTimer = setInterval(() => {
+                activeCallSeconds++;
+                let mins = String(Math.floor(activeCallSeconds / 60)).padStart(2, '0');
+                let secs = String(activeCallSeconds % 60).padStart(2, '0');
+                document.getElementById('call-room-timer').innerText = `Duration: ${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function terminateCallSession() {
+            clearInterval(callTimer);
+            if (localMediaStream) {
+                localMediaStream.getTracks().forEach(track => track.stop());
+                localMediaStream = null;
+            }
+            document.getElementById('video-call-room-modal').style.display = 'none';
+            alert("🔒 Call transmission channel successfully disconnected.");
+        }
+
+        // Leaderboard Display Configuration Logic
+        function switchBoardTimeline(tabKey) {
+            activeTimelineTab = tabKey;
+            document.getElementById('tab-daily').classList.toggle('active', tabKey === 'daily');
+            document.getElementById('tab-weekly').classList.toggle('active', tabKey === 'weekly');
+            renderBoardDataView();
+        }
+
+        function renderBoardDataView() {
+            const outputBox = document.getElementById('leaderboard-listing-container');
+            if(!outputBox) return;
+            outputBox.innerHTML = '';
+
+            let dataList = db.hosts ? [...db.hosts] : [];
+            if(activeTimelineTab === 'daily') {
+                dataList.sort((a,b) => (b.coinsDaily || 0) - (a.coinsDaily || 0));
+            } else {
+                dataList.sort((a,b) => (b.coinsWeekly || 0) - (a.coinsWeekly || 0));
+            }
+
+            if(dataList.length === 0) {
+                outputBox.innerHTML = `<div style="text-align:center; padding:10px; color:var(--text-muted); font-size:0.8rem;">No entries logged yet.</div>`;
                 return;
             }
 
-            // Slice out array to read top profiles safely
-            hostList.slice(0, 10).forEach((host, index) => {
-                let currentRank = index + 1;
-                let displayCoins = currentBoardTimeline === 'daily' ? (host.coinsDaily || 0) : (host.coinsWeekly || 0);
-                
-                let badgeClass = "rank-default";
-                let rankLabel = currentRank;
-                
-                if(currentRank === 1) { badgeClass = "rank-1"; rankLabel = "🥇"; }
-                else if(currentRank === 2) { badgeClass = "rank-2"; rankLabel = "🥈"; }
-                else if(currentRank === 3) { badgeClass = "rank-3"; rankLabel = "🥉"; }
+            dataList.slice(0, 3).forEach((host, index) => {
+                let position = index + 1;
+                let calculatedCoins = activeTimelineTab === 'daily' ? (host.coinsDaily || 0) : (host.coinsWeekly || 0);
+                let boardRowStyle = position === 1 ? "rank-1" : (position === 2 ? "rank-2" : "rank-3");
+                let badgeText = position === 1 ? "🥇" : (position === 2 ? "🥈" : "🥉");
 
-                container.innerHTML += `
+                outputBox.innerHTML += `
                     <div class="rank-row">
                         <div style="display:flex; align-items:center; gap:12px;">
-                            <div class="rank-badge ${badgeClass}">${rankLabel}</div>
+                            <div class="rank-badge ${boardRowStyle}">${badgeText}</div>
                             <div>
                                 <b style="font-size:0.95rem; color:#FFF;">${host.name}</b>
                                 <div style="font-size:0.7rem; color:var(--text-muted);">ID: ${host.uid}</div>
                             </div>
                         </div>
                         <div style="text-align:right;">
-                            <span style="color:var(--accent-gold); font-weight:bold; font-size:0.95rem;">${displayCoins.toLocaleString()}</span>
+                            <span style="color:var(--accent-gold); font-weight:bold; font-size:0.95rem;">${calculatedCoins.toLocaleString()}</span>
                             <span style="font-size:0.7rem; color:var(--text-muted); display:block;">Coins</span>
                         </div>
                     </div>`;
             });
         }
 
-        // Admin Node Interfaces Updates
+        // Admin Core Control Subsystems
         function approveHostApplication(index) {
             let approvedHost = db.pendingHosts.splice(index, 1)[0];
             approvedHost.status = 'approved';
             if(!db.hosts) db.hosts = [];
             db.hosts.push(approvedHost);
             saveState();
+            alert(`✅ Profile Approved: ${approvedHost.name}`);
+            refreshAdminNodeUI(); rebuildFeeds(); renderBoardDataView();
+        }
+
+        function declineHostApplication(index) {
+            let rejected = db.pendingHosts.splice(index, 1)[0];
+            saveState();
+            alert(`❌ Application Rejected for: ${rejected.name}`);
             refreshAdminNodeUI();
-            renderLeaderboardView();
+        }
+
+        function approveAgencyApplication(index) {
+            let approvedAgency = db.pendingAgencies.splice(index, 1)[0];
+            approvedAgency.status = 'approved';
+            if(!db.agencies) db.agencies = [];
+            db.agencies.push(approvedAgency);
+            saveState();
+            alert(`🏢 Agency Approved: ${approvedAgency.name}`);
+            refreshAdminNodeUI();
+        }
+
+        function declineAgencyApplication(index) {
+            let rejected = db.pendingAgencies.splice(index, 1)[0];
+            saveState();
+            alert(`❌ Corporate Agency Application Declined.`);
+            refreshAdminNodeUI();
+        }
+
+        function executeDeductCoins(hostUid) {
+            let amount = parseInt(prompt("Enter amount of coins to deduct from host balance pool:"));
+            if(isNaN(amount) || amount <= 0) return;
+            let target = db.hosts.find(h => h.uid === hostUid);
+            if(target) {
+                target.coinsEarned = Math.max(0, (target.coinsEarned || 0) - amount);
+                target.coinsDaily = Math.max(0, (target.coinsDaily || 0) - amount);
+                target.coinsWeekly = Math.max(0, (target.coinsWeekly || 0) - amount);
+                saveState();
+                alert(`📉 Deducted ${amount} coins from ${target.name}`);
+                refreshAdminNodeUI(); renderBoardDataView();
+            }
+        }
+
+        function executeHardwareBan(hostUid) {
+            if(confirm(`Are you sure you want to enforce a Hardware Policy Restriction Ban on host [${hostUid}]?`)) {
+                let target = db.hosts.find(h => h.uid === hostUid);
+                if(target) {
+                    target.hardwareBan = true;
+                    saveState();
+                    alert(`🚫 Hardware access ban active for ${target.name}. Connection session terminated.`);
+                    refreshAdminNodeUI(); rebuildFeeds();
+                }
+            }
         }
 
         function refreshAdminNodeUI() {
+            document.getElementById('admin-vault-coins').innerText = `${db.totalCoinsProcessed || 0} Coins`;
+            
             const hostQueue = document.getElementById('admin-pending-hosts-queue');
-            if(!hostQueue) return;
-            hostQueue.innerHTML = '';
+            hostQueue.innerHTML = db.pendingHosts.length === 0 ? '<div style="font-size:0.8rem; color:var(--text-muted);">Queue Empty</div>' : '';
             db.pendingHosts.forEach((h, idx) => {
                 hostQueue.innerHTML += `
-                    <div style="background:#0A0F1D; padding:10px; margin-bottom:6px; border-radius:8px;">
-                        <b>${h.name}</b> (${h.email})
-                        <button class="btn btn-green btn-sm" style="margin-top:6px;" onclick="approveHostApplication(${idx})">Authorize</button>
+                    <div style="background:#0A0F1D; padding:10px; margin-bottom:6px; border-radius:8px; border:1px solid #334155;">
+                        <b>${h.name}</b> (${h.email}) - Agency: ${h.agencyCode}
+                        <div style="margin-top:6px; display:flex; gap:8px;">
+                            <button class="btn btn-green btn-sm" onclick="approveHostApplication(${idx})">Approve</button>
+                            <button class="btn btn-danger btn-sm" onclick="declineHostApplication(${idx})">Decline</button>
+                        </div>
                     </div>`;
             });
-        }
 
-        function injectMockEarningsData() {
-            if(!db.hosts || db.hosts.length === 0) {
-                alert("❌ No approved hosts inside the system to inject values into.");
-                return;
-            }
-            db.hosts.forEach(h => {
-                let dailyAddition = Math.floor(Math.random() * 800) + 50;
-                let weeklyAddition = dailyAddition + Math.floor(Math.random() * 2500);
-                
-                h.coinsDaily = (h.coinsDaily || 0) + dailyAddition;
-                h.coinsWeekly = (h.coinsWeekly || 0) + weeklyAddition;
-                h.coinsEarned = (h.coinsEarned || 0) + dailyAddition;
+            const agencyQueue = document.getElementById('admin-pending-agencies-queue');
+            agencyQueue.innerHTML = db.pendingAgencies.length === 0 ? '<div style="font-size:0.8rem; color:var(--text-muted);">Queue Empty</div>' : '';
+            db.pendingAgencies.forEach((a, idx) => {
+                agencyQueue.innerHTML += `
+                    <div style="background:#0A0F1D; padding:10px; margin-bottom:6px; border-radius:8px; border:1px solid #334155;">
+                        <b>🏢 ${a.name}</b> (${a.phone})
+                        <div style="margin-top:6px; display:flex; gap:8px;">
+                            <button class="btn btn-blue btn-sm" onclick="approveAgencyApplication(${idx})">Approve</button>
+                            <button class="btn btn-danger btn-sm" onclick="declineAgencyApplication(${idx})">Decline</button>
+                        </div>
+                    </div>`;
             });
-            saveState();
-            alert("🎯 Mock parameters generated successfully across array instances.");
-            renderLeaderboardView();
+
+            const ctrlPanel = document.getElementById('admin-active-hosts-control-panel');
+            ctrlPanel.innerHTML = '';
+            db.hosts.forEach(h => {
+                ctrlPanel.innerHTML += `
+                    <div style="padding:10px; border-bottom:1px solid #1E293B; display:flex; justify-content:space-between; align-items:center;">
+                        <div><b>${h.name}</b> (${h.uid}) ${h.hardwareBan ? '❌ BANNED' : '✅ Active'}</div>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn btn-pink btn-sm" onclick="executeDeductCoins('${h.uid}')">Deduct</button>
+                            <button class="btn btn-danger btn-sm" onclick="executeHardwareBan('${h.uid}')">Ban Device</button>
+                        </div>
+                    </div>`;
+            });
+
+            const agencyTable = document.getElementById('admin-agencies-list-table');
+            agencyTable.innerHTML = '';
+            db.agencies.forEach(a => {
+                agencyTable.innerHTML += `<tr><td>${a.name}</td><td><b>${a.code}</b></td><td>${a.totalPerformance || 0} Coins</td></tr>`;
+            });
+
+            renderPayrollOutputData();
         }
 
+        function renderPayrollOutputData() {
+            const tableBody = document.getElementById('admin-payroll-table-body');
+            if(!tableBody) return;
+            tableBody.innerHTML = '';
+            const NAIRA_VALUATION_POOL_RATE = 12.5;
+
+            (db.hosts || []).forEach(h => {
+                let payoutCalculated = (h.coinsEarned || 0) * NAIRA_VALUATION_POOL_RATE;
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>💃 ${h.name}</td>
+                        <td><span style="color:var(--text-muted)">Host (${h.agencyCode})</span></td>
+                        <td style="color:var(--accent-gold); font-weight:bold;">${h.coinsEarned || 0}</td>
+                        <td style="color:var(--accent-green); font-weight:bold;">₦${payoutCalculated.toLocaleString()}</td>
+                    </tr>`;
+            });
+        }
+
+        // Live App Online Visibility Directories Routing Loop
+        function rebuildFeeds() {
+            const clientFeedBox = document.getElementById('global-active-hosts-feed');
+            if(clientFeedBox) {
+                clientFeedBox.innerHTML = '';
+                let liveHosts = db.hosts.filter(h => !h.hardwareBan);
+                if(liveHosts.length === 0) {
+                    clientFeedBox.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px; font-size:0.85rem;">No hosts currently online.</div>';
+                } else {
+                    liveHosts.forEach(h => {
+                        clientFeedBox.innerHTML += `
+                            <div class="card flex-row" style="margin-bottom:8px;">
+                                <div><span class="pulse-dot"></span> <b style="margin-left:6px;">${h.name}</b></div>
+                                <div style="display:flex; gap:6px;">
+                                    <button class="btn btn-green btn-sm" onclick="openMessengerModal('${h.uid}', '${h.name}')">Chat</button>
+                                    <button class="btn btn-pink btn-sm" onclick="triggerLiveVideoSession('${h.uid}', 'Client Call to Host')">Call</button>
+                                </div>
+                            </div>`;
+                    });
+                }
+            }
+
+            const hostFeedBox = document.getElementById('host-active-users-directory');
+            if(hostFeedBox) {
+                hostFeedBox.innerHTML = '';
+                if(db.users.length === 0) {
+                    hostFeedBox.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px; font-size:0.85rem;">No online app clients active.</div>';
+                } else {
+                    db.users.forEach(u => {
+                        hostFeedBox.innerHTML += `
+                            <div class="card flex-row" style="margin-bottom:8px;">
+                                <div><b>${u.name}</b> (${u.uid})</div>
+                                <button class="btn btn-green btn-sm" onclick="openMessengerModal('${u.uid}', '${u.name}')">Send Message</button>
+                            </div>`;
+                    });
+                }
+            }
+        }
+
+        // Real Interactive Paystack Inline Core Deployment Integration
         function routeToPaystackGateway(coins, amount) {
-            alert(`Parameters sent: ₦${amount} for ${coins} coins.`);
+            if(!curUser) { alert("❌ You must log in as a user profile entity first."); return; }
+            
+            let handler = PaystackPop.setup({
+                key: 'pk_live_fb16be027bb5f97047135db78046d6c9249912b3', // Replace with your public key token
+                email: curUser.email,
+                amount: amount * 100, // Converted to kobo automatically
+                currency: 'NGN',
+                ref: 'VIVY-' + Math.floor(Math.random() * 999999999 + 1),
+                callback: function(response) {
+                    alert('💳 Transaction Successful! Reference code: ' + response.reference);
+                    curUser.coins = (curUser.coins || 0) + coins;
+                    db.totalCoinsProcessed = (db.totalCoinsProcessed || 0) + coins;
+                    saveState();
+                    document.getElementById('user-wallet-balance').innerText = `${curUser.coins} Coins`;
+                },
+                onClose: function() {
+                    alert('❌ Premium token allocation checkout modal closed prematurely.');
+                }
+            });
+            handler.openIframe();
+        }
+
+        function downloadPayrollCSV() {
+            let csvDataRows = [["Entity Title Tag", "System Role Unit", "Coins Total"]];
+            (db.hosts || []).forEach(h => { csvDataRows.push([h.name, `Host Account`, h.coinsEarned || 0]); });
+            let coreContent = "data:text/csv;charset=utf-8," + csvDataRows.map(r => r.join(",")).join("\n");
+            let uriFormatted = encodeURI(coreContent);
+            let downNode = document.createElement("a");
+            downNode.setAttribute("href", uriFormatted);
+            downNode.setAttribute("download", `Payroll_Report.csv`);
+            document.body.appendChild(downNode);
+            downNode.click();
+            document.body.removeChild(downNode);
+        }
+
+        function rebuildAgencyTalentRegistry() {
+            const body = document.getElementById('agency-host-table-body');
+            if(!body || !curAgency) return;
+            body.innerHTML = '';
+            let accumulated = 0;
+            let relevantHosts = (db.hosts || []).filter(h => h.agencyCode === curAgency.code);
+            relevantHosts.forEach(h => {
+                accumulated += (h.coinsEarned || 0);
+                body.innerHTML += `<tr><td>${h.name}</td><td>${h.uid}</td><td><b>${h.coinsEarned} Coins</b></td></tr>`;
+            });
+            curAgency.totalPerformance = accumulated;
+            document.getElementById('agency-total-balance').innerText = `${accumulated} Coins`;
+            saveState();
         }
 
         function clearSystemDatabase() {
-            localStorage.removeItem('vivylive_db_v2');
-            location.reload();
+            if(confirm("Wipe storage?")) {
+                localStorage.removeItem('vivylive_db_v2');
+                location.reload();
+            }
         }
     </script>
 </body>
-    </html>
+                                                                        </html>
