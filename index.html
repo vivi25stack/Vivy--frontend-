@@ -465,173 +465,317 @@
                 db.users.push(userObj); saveState();
                 curUser = userObj;
             } else {
-                const verifiedMatch = db.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
-                if(!verifiedMatch) { alert("❌ Invalid credentials found in global database logs."); return; }
-                curUser = verifiedMatch;
+                let userCheck = db.users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
+                if(!userCheck) { alert("❌ Personal credentials invalid or unrecognized."); return; }
+                curUser = userCheck;
             }
-
             document.getElementById('user-display-id').innerText = `ID: ${curUser.uid}`;
             document.getElementById('user-wallet-balance').innerText = `${curUser.coins} Coins`;
-            rebuildFeeds(); renderBoardDataView(); switchActiveViewport('user-dashboard');
+            document.getElementById('main-navigation-navbar').style.display = 'flex';
+            switchActiveViewport('user-dashboard');
+            rebuildFeeds();
         }
 
         function submitHostAuth() {
             const email = document.getElementById('host-auth-email').value.trim();
             const pass = document.getElementById('host-auth-pass').value.trim();
-            if(!email || pass.length !== 6) { alert("❌ Security signature must contain explicit structural assets."); return; }
+            if(!email || pass.length !== 6) { alert("❌ Insert explicit email and 6-digit verification PIN structure."); return; }
 
             if(hostAuthMode === 'register') {
-                const name = document.getElementById('host-auth-name').value;
-                const agencyCode = document.getElementById('host-auth-agency').value.trim().toUpperCase();
+                if(db.hosts.find(h => h.email.toLowerCase() === email.toLowerCase())) { alert("❌ Host identity catalog records this email address already."); return; }
+                if(db.pendingHosts.find(h => h.email.toLowerCase() === email.toLowerCase())) { alert("⏳ An application using this email address is already awaiting root review."); return; }
                 
-                const targetAgency = db.agencies.find(a => a.code.trim().toUpperCase() === agencyCode);
-                if(!targetAgency) { alert("❌ Assigned Agency Code does not exist or isn't approved by Admin yet."); return; }
-
-                const application = { name, email, pass, agencyCode, uid: "HOST-" + Math.floor(1000 + Math.random()*9000), coinsEarned: 0, coinsDaily: 0, coinsWeekly: 0, status: 'pending', hardwareBan: false, lastActive: Date.now() };
-                db.pendingHosts.push(application); saveState();
+                const name = document.getElementById('host-auth-name').value.trim() || "Live Host";
+                const agencyCode = document.getElementById('host-auth-agency').value.trim().toUpperCase() || "DIRECT";
+                
+                const application = { 
+                    name, 
+                    email, 
+                    pass, 
+                    agencyCode, 
+                    uid: "HOST-" + Math.floor(1000 + Math.random()*9000), 
+                    coinsEarned: 0, 
+                    coinsDaily: 0, 
+                    coinsWeekly: 0, 
+                    status: 'pending', 
+                    hardwareBan: false, 
+                    lastActive: Date.now() 
+                };
+                db.pendingHosts.push(application); 
+                saveState();
                 alert("✅ Application dispatched directly to system administrative command pipeline queue.");
-                toggleHostAuthMode(); return;
+                toggleHostAuthMode(); 
+                return;
             } else {
-                const systemCheck = db.hosts.find(h => h.email.toLowerCase() === email.toLowerCase() && h.pass === pass);
-                if(!systemCheck) { alert("❌ Account authentication failed or onboarding still pending manual root review."); return; }
-                if(systemCheck.hardwareBan) { alert("🚫 Hardware Access Ban Implemented. Account registration revoked."); return; }
+                // 1. Check if the account exists in the approved hosts database
+                let systemCheck = db.hosts.find(h => h.email.toLowerCase() === email.toLowerCase() && h.pass === pass);
                 
+                // 2. If not found in approved hosts, check if it's still pending
+                if (!systemCheck) {
+                    const isPending = db.pendingHosts.some(h => h.email.toLowerCase() === email.toLowerCase() && h.pass === pass);
+                    if (isPending) {
+                        alert("⏳ Onboarding still pending manual root review. Please wait for approval.");
+                    } else {
+                        alert("❌ Account authentication failed. Invalid email or password.");
+                    }
+                    return;
+                }
+                
+                // 3. Check for hardware ban
+                if (systemCheck.hardwareBan) { 
+                    alert("🚫 Hardware Access Ban Implemented. Account registration revoked."); 
+                    return; 
+                }
+                
+                // 4. Log them into the dashboard if approved and active
                 curHost = systemCheck;
-                curHost.lastActive = Date.now(); saveState();
-                launchHostDashboardView();
+                curHost.lastActive = Date.now(); 
+                saveState();
+                
+                document.getElementById('host-profile-name-label').innerText = curHost.name;
+                document.getElementById('host-profile-uid-label').innerText = `ID: ${curHost.uid}`;
+                document.getElementById('host-earnings-balance').innerText = `${curHost.coinsEarned || 0} Coins`;
+                switchActiveViewport('host-dashboard');
+                rebuildFeeds();
             }
         }
 
-        function launchHostDashboardView() {
-            document.getElementById('host-profile-name-label').innerText = `💃 Host: ${curHost.name}`;
-            document.getElementById('host-profile-uid-label').innerText = `ID: ${curHost.uid} [${curHost.agencyCode}]`;
-            document.getElementById('host-earnings-balance').innerText = `${curHost.coinsEarned} Coins`;
-            rebuildFeeds();
-            switchActiveViewport('host-dashboard');
-        }
-
         function executeAdminRootValidation() {
-            const pass = document.getElementById('agency-auth-pass').value;
-            if(pass === "vivyrootadmin2026") {
-                refreshAdminNodeUI(); switchActiveViewport('admin-dashboard');
-            } else { alert("❌ High security command block authorization failure."); }
+            const email = document.getElementById('agency-auth-email').value.trim();
+            const pass = document.getElementById('agency-auth-pass').value.trim();
+            if(email === "admin@vivylive.com" && pass === "root9120") {
+                alert("👑 Root Administration override signature validated successfully.");
+                renderAdminControlInterface();
+                switchActiveViewport('admin-dashboard');
+            } else {
+                alert("❌ Verification mismatch. Access denied.");
+            }
         }
 
         function submitAgencyAuth() {
             const email = document.getElementById('agency-auth-email').value.trim();
-            const pass = document.getElementById('agency-auth-pass').value;
+            const pass = document.getElementById('agency-auth-pass').value.trim();
+            if(!email || !pass) { alert("❌ Supply comprehensive validation credentials."); return; }
 
             if(agencyAuthMode === 'register') {
-                const name = document.getElementById('agency-auth-name').value;
-                const phone = document.getElementById('agency-auth-phone').value;
-                if(!name || !email) { alert("❌ Essential mapping data missing."); return; }
-
-                const entry = { name, email, pass, phone, code: "VIVY-AGC-" + Math.floor(10 + Math.random()*89), uid: "AGC-" + Math.floor(100+Math.random()*899), totalPerformance: 0, status: 'pending' };
+                if(db.agencies.find(a => a.email.toLowerCase() === email.toLowerCase())) { alert("❌ Enterprise email record exists globally."); return; }
+                const name = document.getElementById('agency-auth-name').value.trim() || "Corporate Agency";
+                const phone = document.getElementById('agency-auth-phone').value.trim() || "+234";
+                const entry = {
+                    name, email, pass, phone,
+                    code: "VIVY-AGC-" + Math.floor(10 + Math.random()*89),
+                    approved: false
+                };
                 db.pendingAgencies.push(entry); saveState();
-                alert("🏢 Agency profile buffered to admin approvals pipeline layer.");
-                toggleAgencyAuthMode();
+                alert("📥 Corporate validation structural files queued for Administrative review.");
+                agencyAuthMode = 'login'; toggleAgencyAuthMode();
             } else {
-                const matchingAgency = db.agencies.find(a => a.email.toLowerCase() === email.toLowerCase() && a.pass === pass);
-                if(!matchingAgency) { alert("❌ Verification mismatch or corporate registration pending review."); return; }
-                curAgency = matchingAgency;
-                
-                document.getElementById('agency-headline-title').innerText = `🏢 ${curAgency.name} Control Grid`;
-                document.getElementById('agency-code-badge').innerText = curAgency.code;
-                document.getElementById('agency-link-display').value = `${window.location.origin}${window.location.pathname}?code=${curAgency.code}`;
-                
-                rebuildAgencyTalentRegistry();
+                let check = db.agencies.find(a => a.email.toLowerCase() === email.toLowerCase() && a.pass === pass);
+                if(!check) { alert("❌ Credentials invalid or registration review uncompleted."); return; }
+                curAgency = check;
+                renderAgencyDashboardGrid();
                 switchActiveViewport('agency-dashboard');
             }
         }
 
+        function renderAgencyDashboardGrid() {
+            if(!curAgency) return;
+            document.getElementById('agency-headline-title').innerText = `${curAgency.name} Hub`;
+            document.getElementById('agency-code-badge').innerText = curAgency.code;
+            
+            const localLink = `${window.location.origin}${window.location.pathname}?code=${curAgency.code}`;
+            document.getElementById('agency-link-display').value = localLink;
+
+            let associatedHosts = db.hosts.filter(h => h.agencyCode === curAgency.code);
+            let combinedEarnings = associatedHosts.reduce((acc, current) => acc + (current.coinsEarned || 0), 0);
+            document.getElementById('agency-total-balance').innerText = `${combinedEarnings} Coins`;
+
+            let tbody = document.getElementById('agency-host-table-body');
+            tbody.innerHTML = "";
+            associatedHosts.forEach(h => {
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td><b>${h.name}</b></td><td><small class='user-id-tag'>${h.uid}</small></td><td><span style='color:var(--accent-gold); font-weight:bold;'>${h.coinsEarned} Coins</span></td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
         function copyAgencyLinkToClipboard() {
-            const linkField = document.getElementById('agency-link-display');
-            linkField.select();
-            linkField.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(linkField.value).then(() => {
-                alert("📋 Invitation link copied to clipboard storage!");
-            }).catch(() => {
-                alert("❌ Failed to automatically copy link.");
+            const inputField = document.getElementById('agency-link-display');
+            inputField.select();
+            inputField.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(inputField.value)
+                .then(() => alert("📋 Invitation reference deployed onto clipboard vectors."))
+                .catch(() => alert("❌ Clipboard tracking interaction failed. Double check app sandboxing."));
+        }
+
+        function renderAdminControlInterface() {
+            let runningCoins = db.hosts.reduce((acc, h) => acc + (h.coinsEarned || 0), 0);
+            document.getElementById('admin-vault-coins').innerText = `${runningCoins} Coins`;
+
+            let payrollBody = document.getElementById('admin-payroll-table-body');
+            payrollBody.innerHTML = "";
+            
+            db.hosts.forEach(h => {
+                let payoutValue = h.coinsEarned * 3.5; 
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td>${h.name} <small style='color:var(--text-muted);'>(Host)</small></td><td><small class='user-id-tag'>${h.uid}</small></td><td>${h.coinsEarned}</td><td style='color:var(--accent-green); font-weight:bold;'>₦${payoutValue.toLocaleString()}</td>`;
+                payrollBody.appendChild(tr);
+            });
+
+            db.agencies.forEach(a => {
+                let connectedHosts = db.hosts.filter(h => h.agencyCode === a.code);
+                let combinedCoins = connectedHosts.reduce((acc, current) => acc + (current.coinsEarned || 0), 0);
+                let agencyCut = combinedCoins * 0.5; 
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td>${a.name} <small style='color:var(--accent-blue);'>(Agency)</small></td><td><small class='user-id-tag'>${a.code}</small></td><td>${combinedCoins}</td><td style='color:var(--accent-green); font-weight:bold;'>₦${agencyCut.toLocaleString()}</td>`;
+                payrollBody.appendChild(tr);
+            });
+
+            let agencyListBody = document.getElementById('admin-agencies-list-table');
+            agencyListBody.innerHTML = "";
+            db.agencies.forEach(a => {
+                let connectedHosts = db.hosts.filter(h => h.agencyCode === a.code);
+                let combinedCoins = connectedHosts.reduce((acc, current) => acc + (current.coinsEarned || 0), 0);
+                let tr = document.createElement('tr');
+                tr.innerHTML = `<td><b>${a.name}</b><br><small style='color:var(--text-muted);'>${a.phone}</small></td><td><span class='user-id-tag'>${a.code}</span></td><td><b style='color:var(--accent-gold);'>${combinedCoins} Coins</b></td>`;
+                agencyListBody.appendChild(tr);
+            });
+
+            let penaltyPane = document.getElementById('admin-active-hosts-control-panel');
+            penaltyPane.innerHTML = "";
+            if(db.hosts.length === 0) penaltyPane.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem; padding:10px;'>No verified operational hosts discovered inside production framework.</p>";
+            db.hosts.forEach(h => {
+                let element = document.createElement('div');
+                element.style.cssText = "display:flex; justify-content:between; align-items:center; background:#0A0F1D; padding:12px; margin-bottom:8px; border-radius:10px; border:1px solid #1E293B;";
+                element.innerHTML = `
+                    <div style='flex:1;'>
+                        <b>${h.name}</b> <small style='color:var(--text-muted);'>(${h.agencyCode})</small><br>
+                        <small class='user-id-tag'>${h.uid}</small>
+                    </div>
+                    <div style='display:flex; gap:6px;'>
+                        <button class='btn btn-gold btn-sm' onclick='adjustHostTokensAdmin("${h.uid}")'>🪙 Adjust</button>
+                        <button class='btn btn-danger btn-sm' onclick='toggleHardwareBanAdmin("${h.uid}")'>${h.hardwareBan ? '⚡ Unban' : '🚫 Ban'}</button>
+                    </div>
+                `;
+                penaltyPane.appendChild(element);
+            });
+
+            let hostQueueContainer = document.getElementById('admin-pending-hosts-queue');
+            hostQueueContainer.innerHTML = "";
+            if(db.pendingHosts.length === 0) hostQueueContainer.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem; padding:10px;'>Queue processing completed. Zero pending pipelines remaining.</p>";
+            db.pendingHosts.forEach((ph, idx) => {
+                let div = document.createElement('div');
+                div.style.cssText = "background:#0A0F1D; padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid #243766; text-align:left;";
+                div.innerHTML = `
+                    <div><b>Name:</b> ${ph.name}</div>
+                    <div><b>Email:</b> ${ph.email}</div>
+                    <div><b>Agency:</b> ${ph.agencyCode}</div>
+                    <div style='margin-top:8px; display:flex; gap:8px;'>
+                        <button class='btn btn-green btn-sm' onclick='processHostApplication(${idx}, true)'>Confirm Approval</button>
+                        <button class='btn btn-danger btn-sm' onclick='processHostApplication(${idx}, false)'>Reject</button>
+                    </div>
+                `;
+                hostQueueContainer.appendChild(div);
+            });
+
+            let agencyQueueContainer = document.getElementById('admin-pending-agencies-queue');
+            agencyQueueContainer.innerHTML = "";
+            if(db.pendingAgencies.length === 0) agencyQueueContainer.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem; padding:10px;'>Corporate onboarding pipelines empty.</p>";
+            db.pendingAgencies.forEach((pa, idx) => {
+                let div = document.createElement('div');
+                div.style.cssText = "background:#0A0F1D; padding:12px; border-radius:12px; margin-bottom:8px; border:1px solid #243766; text-align:left;";
+                div.innerHTML = `
+                    <div><b>Agency Title:</b> ${pa.name}</div>
+                    <div><b>Contact Address:</b> ${pa.email}</div>
+                    <div><b>WhatsApp Target:</b> ${pa.phone}</div>
+                    <div style='margin-top:8px; display:flex; gap:8px;'>
+                        <button class='btn btn-green btn-sm' onclick='processAgencyApplication(${idx}, true)'>Pass Approval</button>
+                        <button class='btn btn-danger btn-sm' onclick='processAgencyApplication(${idx}, false)'>Reject Request</button>
+                    </div>
+                `;
+                agencyQueueContainer.appendChild(div);
             });
         }
 
-        function openMessengerModal(targetUid, targetName) {
-            activeTargetUid = targetUid;
-            document.getElementById('messenger-target-name').innerText = `Chat with ${targetName} (${targetUid})`;
-            document.getElementById('host-messenger-modal').style.display = 'flex';
-            renderChatMessages();
-        }
-
-        function closeMessengerModal() {
-            document.getElementById('host-messenger-modal').style.display = 'none';
-        }
-
-        function renderChatMessages() {
-            const historyBox = document.getElementById('messenger-chat-history');
-            historyBox.innerHTML = '';
-            if (!db.chats) db.chats = {};
-            
-            let chatKey = [ (curUser ? curUser.uid : curHost.uid), activeTargetUid ].sort().join('_');
-            let messages = db.chats[chatKey] || [];
-            
-            if(messages.length === 0) {
-                historyBox.innerHTML = `<div style="color:var(--text-muted); font-size:0.8rem; text-align:center;">No transaction messages logged.</div>`;
-                return;
+        function processHostApplication(idx, passOption) {
+            if(passOption) {
+                let hostItem = db.pendingHosts[idx];
+                hostItem.status = 'approved';
+                db.hosts.push(hostItem);
             }
-            messages.forEach(msg => {
-                historyBox.innerHTML += `<div style="margin-bottom:6px; font-size:0.85rem;"><b>${msg.sender}:</b> ${msg.text}</div>`;
+            db.pendingHosts.splice(idx, 1);
+            saveState(); renderAdminControlInterface();
+        }
+
+        function processAgencyApplication(idx, passOption) {
+            if(passOption) {
+                let agencyItem = db.pendingAgencies[idx];
+                agencyItem.approved = true;
+                db.agencies.push(agencyItem);
+            }
+            db.pendingAgencies.splice(idx, 1);
+            saveState(); renderAdminControlInterface();
+        }
+
+        function adjustHostTokensAdmin(uid) {
+            let host = db.hosts.find(h => h.uid === uid);
+            if(!host) return;
+            let quantity = prompt(`Adjust balance pool vectors for ${host.name}:`, host.coinsEarned);
+            if(quantity !== null) {
+                host.coinsEarned = parseInt(quantity) || 0;
+                saveState(); renderAdminControlInterface();
+            }
+        }
+
+        function toggleHardwareBanAdmin(uid) {
+            let host = db.hosts.find(h => h.uid === uid);
+            if(!host) return;
+            host.hardwareBan = !host.hardwareBan;
+            saveState(); renderAdminControlInterface();
+        }
+
+        function downloadPayrollCSV() {
+            let lines = ["Entity Name,Role Type,Token Reserves Pool,Payout Evaluation Valuation (NGN)"];
+            db.hosts.forEach(h => {
+                lines.push(`"${h.name}",Host,${h.coinsEarned},${h.coinsEarned * 3.5}`);
             });
-            historyBox.scrollTop = historyBox.scrollHeight;
+            db.agencies.forEach(a => {
+                let connectedHosts = db.hosts.filter(h => h.agencyCode === a.code);
+                let combinedCoins = connectedHosts.reduce((acc, current) => acc + (current.coinsEarned || 0), 0);
+                lines.push(`"${a.name}",Agency,${combinedCoins},${combinedCoins * 0.5}`);
+            });
+            let blob = new Blob([lines.join("\n")], { type: 'text/csv;charset=utf-8;' });
+            let element = document.createElement('a');
+            element.href = URL.createObjectURL(blob);
+            element.setAttribute('download', `VivyLive_Financial_Report_Cycle_${Date.now()}.csv`);
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
         }
 
-        function dispatchChatMessage() {
-            const textNode = document.getElementById('messenger-input-field');
-            if(!textNode.value.trim()) return;
-            
-            let senderName = curUser ? curUser.name : curHost.name;
-            let senderUid = curUser ? curUser.uid : curHost.uid;
-            let chatKey = [senderUid, activeTargetUid].sort().join('_');
-            
-            if(!db.chats[chatKey]) db.chats[chatKey] = [];
-            db.chats[chatKey].push({ sender: senderName, text: textNode.value.trim() });
-            saveState();
-            
-            textNode.value = '';
-            renderChatMessages();
-        }
-
-        async function triggerLiveVideoSession(targetUid, roleTitle) {
-            document.getElementById('call-room-type-title').innerText = `🎥 Live Connection Status: [${roleTitle}]`;
-            document.getElementById('video-call-room-modal').style.display = 'flex';
-            activeCallSeconds = 0;
-            
-            try {
-                localMediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                const videoElement = document.getElementById('video-canvas-element');
-                if (videoElement) {
-                    videoElement.srcObject = localMediaStream;
-                }
-            } catch (err) {
-                console.warn("Camera hardware stream unhandled or locked: ", err);
-                alert("⚠️ App Notice: Audio/Video device initialization failure. Operating room via mock telemetry node simulation loop framework.");
+        function clearSystemDatabase() {
+            if(confirm("☣️ Critical Confirmation: Wipe all data storage structures permanently?")) {
+                localStorage.removeItem('vivylive_db_v2');
+                alert("Database localized instances hard-dropped completely.");
+                location.reload();
             }
-
-            callTimer = setInterval(() => {
-                activeCallSeconds++;
-                let mins = String(Math.floor(activeCallSeconds / 30)).padStart(2, '0');
-                let secs = String(activeCallSeconds % 60).padStart(2, '0');
-                document.getElementById('call-room-timer').innerText = `Duration: ${mins}:${secs}`;
-            }, 250);
         }
 
-        function terminateCallSession() {
-            clearInterval(callTimer);
-            if (localMediaStream) {
-                localMediaStream.getTracks().forEach(track => track.stop());
-                localMediaStream = null;
+        function switchActiveViewport(panelId) {
+            document.querySelectorAll('.view-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            document.getElementById(`view-${panelId}`).classList.add('active');
+            
+            const clientItem = document.getElementById('nav-btn-user');
+            const talentItem = document.getElementById('nav-btn-host');
+            if(panelId === 'user-dashboard') {
+                clientItem.classList.add('active');
+                talentItem.classList.remove('active');
+            } else if(panelId === 'host-dashboard') {
+                clientItem.classList.remove('active');
+                talentItem.classList.add('active');
             }
-            document.getElementById('video-call-room-modal').style.display = 'none';
-            alert("🔒 Call transmission channel successfully disconnected.");
         }
 
         function switchBoardTimeline(tabKey) {
@@ -642,279 +786,190 @@
         }
 
         function renderBoardDataView() {
-            const outputBox = document.getElementById('leaderboard-listing-container');
-            if(!outputBox) return;
-            outputBox.innerHTML = '';
-
-            let dataList = db.hosts ? [...db.hosts] : [];
-            if(activeTimelineTab === 'daily') {
-                dataList.sort((a,b) => (b.coinsDaily || 0) - (a.coinsDaily || 0));
+            let sorted = [...db.hosts];
+            if (activeTimelineTab === 'daily') {
+                sorted.sort((a, b) => (b.coinsDaily || 0) - (a.coinsDaily || 0));
             } else {
-                dataList.sort((a,b) => (b.coinsWeekly || 0) - (a.coinsWeekly || 0));
+                sorted.sort((a, b) => (b.coinsWeekly || 0) - (a.coinsWeekly || 0));
             }
 
-            if(dataList.length === 0) {
-                outputBox.innerHTML = `<div style="text-align:center; padding:10px; color:var(--text-muted); font-size:0.8rem;">No entries logged yet.</div>`;
+            let container = document.getElementById('leaderboard-listing-container');
+            container.innerHTML = "";
+            
+            if(sorted.length === 0) {
+                container.innerHTML = "<p style='color:var(--text-muted); text-align:center; font-size:0.85rem; margin:10px 0;'>No active tracking metadata compiled yet.</p>";
                 return;
             }
 
-            dataList.slice(0, 3).forEach((host, index) => {
-                let position = index + 1;
-                let calculatedCoins = activeTimelineTab === 'daily' ? (host.coinsDaily || 0) : (host.coinsWeekly || 0);
-                let boardRowStyle = position === 1 ? "rank-1" : (position === 2 ? "rank-2" : "rank-3");
-                let badgeText = position === 1 ? "🥇" : (position === 2 ? "🥈" : "🥉");
-
-                outputBox.innerHTML += `
-                    <div class="rank-row">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <div class="rank-badge ${boardRowStyle}">${badgeText}</div>
-                            <div class="leaderboard-avatar-frame" style="border: 2px solid; border-color: inherit;">
-                                📸
-                            </div>
-                            <div>
-                                <b style="font-size:0.95rem; color:#FFF;">${host.name}</b>
-                                <div style="font-size:0.7rem; color:var(--text-muted);">ID: ${host.uid}</div>
-                            </div>
+            sorted.slice(0, 10).forEach((host, index) => {
+                let rankNum = index + 1;
+                let displayCoins = activeTimelineTab === 'daily' ? (host.coinsDaily || 0) : (host.coinsWeekly || 0);
+                
+                let row = document.createElement('div');
+                row.className = "rank-row";
+                row.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span class="rank-badge rank-${rankNum}">${rankNum}</span>
+                        <div class="leaderboard-avatar-frame ${rankNum <= 3 ? 'rank-' + rankNum : ''}">🎭</div>
+                        <div>
+                            <div style="font-size:0.9rem; font-weight:bold;">${host.name}</div>
+                            <small style="color:var(--text-muted); font-size:0.7rem;">ID: ${host.uid}</small>
                         </div>
-                        <div style="text-align:right;">
-                            <span style="color:var(--accent-gold); font-weight:bold; font-size:0.95rem;">${calculatedCoins.toLocaleString()}</span>
-                            <span style="font-size:0.7rem; color:var(--text-muted); display:block;">Coins</span>
-                        </div>
-                    </div>`;
+                    </div>
+                    <div style="color:var(--accent-gold); font-weight:bold; font-size:0.9rem;">🪙 ${displayCoins.toLocaleString()}</div>
+                `;
+                container.appendChild(row);
             });
         }
 
-        function approveHostApplication(index) {
-            let approvedHost = db.pendingHosts.splice(index, 1)[0];
-            approvedHost.status = 'approved';
-            if(!db.hosts) db.hosts = [];
-            db.hosts.push(approvedHost);
-            saveState();
-            alert(`✅ Profile Approved: ${approvedHost.name}`);
-            refreshAdminNodeUI(); rebuildFeeds(); renderBoardDataView();
-        }
-
-        function declineHostApplication(index) {
-            db.pendingHosts.splice(index, 1);
-            saveState();
-            alert(`❌ Application Rejected.`);
-            refreshAdminNodeUI();
-        }
-
-        function approveAgencyApplication(index) {
-            let approvedAgency = db.pendingAgencies.splice(index, 1)[0];
-            approvedAgency.status = 'approved';
-            if(!db.agencies) db.agencies = [];
-            db.agencies.push(approvedAgency);
-            saveState();
-            alert(`🏢 Agency Approved: ${approvedAgency.name}`);
-            refreshAdminNodeUI();
-        }
-
-        function declineAgencyApplication(index) {
-            db.pendingAgencies.splice(index, 1);
-            saveState();
-            alert(`❌ Corporate Agency Application Declined.`);
-            refreshAdminNodeUI();
-        }
-
-        function executeDeductCoins(hostUid) {
-            let amount = parseInt(prompt("Enter amount of coins to deduct from host balance pool:"));
-            if(isNaN(amount) || amount <= 0) return;
-            let target = db.hosts.find(h => h.uid === hostUid);
-            if(target) {
-                target.coinsEarned = Math.max(0, (target.coinsEarned || 0) - amount);
-                target.coinsDaily = Math.max(0, (target.coinsDaily || 0) - amount);
-                target.coinsWeekly = Math.max(0, (target.coinsWeekly || 0) - amount);
-                saveState();
-                alert(`📉 Deducted ${amount} coins from ${target.name}`);
-                refreshAdminNodeUI(); renderBoardDataView();
-            }
-        }
-
-        function executeHardwareBan(hostUid) {
-            if(confirm(`Are you sure you want to enforce a Hardware Policy Restriction Ban on host [${hostUid}]?`)) {
-                let target = db.hosts.find(h => h.uid === hostUid);
-                if(target) {
-                    target.hardwareBan = true;
-                    saveState();
-                    alert(`🚫 Hardware access ban active for ${target.name}. Connection session terminated.`);
-                    refreshAdminNodeUI(); rebuildFeeds();
-                }
-            }
-        }
-
-        function refreshAdminNodeUI() {
-            document.getElementById('admin-vault-coins').innerText = `${db.totalCoinsProcessed || 0} Coins`;
-            
-            const hostQueue = document.getElementById('admin-pending-hosts-queue');
-            hostQueue.innerHTML = db.pendingHosts.length === 0 ? '<div style="font-size:0.8rem; color:var(--text-muted);">Queue Empty</div>' : '';
-            db.pendingHosts.forEach((h, idx) => {
-                hostQueue.innerHTML += `
-                    <div style="background:#0A0F1D; padding:10px; margin-bottom:6px; border-radius:8px; border:1px solid #334155;">
-                        <b>${h.name}</b> (${h.email}) - Agency: ${h.agencyCode}
-                        <div style="margin-top:6px; display:flex; gap:8px;">
-                            <button class="btn btn-green btn-sm" onclick="approveHostApplication(${idx})">Approve</button>
-                            <button class="btn btn-danger btn-sm" onclick="declineHostApplication(${idx})">Decline</button>
-                        </div>
-                    </div>`;
-            });
-
-            const agencyQueue = document.getElementById('admin-pending-agencies-queue');
-            agencyQueue.innerHTML = db.pendingAgencies.length === 0 ? '<div style="font-size:0.8rem; color:var(--text-muted);">Queue Empty</div>' : '';
-            db.pendingAgencies.forEach((a, idx) => {
-                agencyQueue.innerHTML += `
-                    <div style="background:#0A0F1D; padding:10px; margin-bottom:6px; border-radius:8px; border:1px solid #334155;">
-                        <b>🏢 ${a.name}</b> (${a.phone})
-                        <div style="margin-top:6px; display:flex; gap:8px;">
-                            <button class="btn btn-blue btn-sm" onclick="approveAgencyApplication(${idx})">Approve</button>
-                            <button class="btn btn-danger btn-sm" onclick="declineAgencyApplication(${idx})">Decline</button>
-                        </div>
-                    </div>`;
-            });
-
-            const ctrlPanel = document.getElementById('admin-active-hosts-control-panel');
-            ctrlPanel.innerHTML = '';
-            db.hosts.forEach(h => {
-                ctrlPanel.innerHTML += `
-                    <div style="padding:10px; border-bottom:1px solid #1E293B; display:flex; justify-content:space-between; align-items:center;">
-                        <div><b>${h.name}</b> (${h.uid}) ${h.hardwareBan ? '❌ BANNED' : '✅ Active'}</div>
-                        <div style="display:flex; gap:6px;">
-                            <button class="btn btn-pink btn-sm" onclick="executeDeductCoins('${h.uid}')">Deduct</button>
-                            <button class="btn btn-danger btn-sm" onclick="executeHardwareBan('${h.uid}')">Ban Device</button>
-                        </div>
-                    </div>`;
-            });
-
-            const agencyTable = document.getElementById('admin-agencies-list-table');
-            agencyTable.innerHTML = '';
-            db.agencies.forEach(a => {
-                agencyTable.innerHTML += `<tr><td>${a.name}</td><td><b>${a.code}</b></td><td>${a.totalPerformance || 0} Coins</td></tr>`;
-            });
-
-            renderPayrollOutputData();
-        }
-
-        function renderPayrollOutputData() {
-            const tableBody = document.getElementById('admin-payroll-table-body');
-            if(!tableBody) return;
-            tableBody.innerHTML = '';
-            const NAIRA_VALUATION_POOL_RATE = 12.5;
-
-            (db.hosts || []).forEach(h => {
-                let payoutCalculated = (h.coinsEarned || 0) * NAIRA_VALUATION_POOL_RATE;
-                tableBody.innerHTML += `
-                    <tr>
-                        <td>💃 ${h.name}</td>
-                        <td><span style="color:var(--text-muted)">Host (${h.agencyCode})</span></td>
-                        <td style="color:var(--accent-gold); font-weight:bold;">${h.coinsEarned || 0}</td>
-                        <td style="color:var(--accent-green); font-weight:bold;">₦${payoutCalculated.toLocaleString()}</td>
-                    </tr>`;
-            });
-        }
-
-        function rebuildFeeds() {
-            const clientFeedBox = document.getElementById('global-active-hosts-feed');
-            if(clientFeedBox) {
-                clientFeedBox.innerHTML = '';
-                let liveHosts = db.hosts ? db.hosts.filter(h => !h.hardwareBan) : [];
-                if(liveHosts.length === 0) {
-                    clientFeedBox.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px; font-size:0.85rem;">No hosts currently online.</div>';
-                } else {
-                    liveHosts.forEach(h => {
-                        clientFeedBox.innerHTML += `
-                            <div class="card flex-row" style="margin-bottom:8px;">
-                                <div><span class="pulse-dot"></span> <b style="margin-left:6px;">${h.name}</b></div>
-                                <div style="display:flex; gap:6px;">
-                                    <button class="btn btn-green btn-sm" onclick="openMessengerModal('${h.uid}', '${h.name}')">Chat</button>
-                                    <button class="btn btn-pink btn-sm" onclick="triggerLiveVideoSession('${h.uid}', 'Client Call to Host')">Call</button>
-                                </div>
-                            </div>`;
-                    });
-                }
-            }
-
-            const hostFeedBox = document.getElementById('host-active-users-directory');
-            if(hostFeedBox) {
-                hostFeedBox.innerHTML = '';
-                if(!db.users || db.users.length === 0) {
-                    hostFeedBox.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding:10px; font-size:0.85rem;">No online app clients active.</div>';
-                } else {
-                    db.users.forEach(u => {
-                        hostFeedBox.innerHTML += `
-                            <div class="card flex-row" style="margin-bottom:8px;">
-                                <div><b>${u.name}</b> (${u.uid})</div>
-                                <button class="btn btn-green btn-sm" onclick="openMessengerModal('${u.uid}', '${u.name}')">Send Message</button>
-                            </div>`;
-                    });
-                }
-            }
-        }
-
-        function routeToPaystackGateway(coins, amount) {
-            if(!curUser) { alert("❌ You must log in as a user profile entity first."); return; }
+        function routeToPaystackGateway(coinQty, costFiat) {
+            if(!curUser) { alert("❌ System requires valid client active session profiles prior to entering checkout pipelines."); return; }
             
             let handler = PaystackPop.setup({
                 key: 'pk_live_fb16be027bb5f97047135db78046d6c9249912b3',
                 email: curUser.email,
-                amount: amount * 100, 
-                currency: 'NGN',
-                ref: 'VIVY-' + Math.floor(Math.random() * 999999999 + 1),
+                amount: costFiat * 100,
+                currency: "NGN",
+                metadata: { custom_fields: [{ display_name: "User UID", variable_name: "user_uid", value: curUser.uid }] },
                 callback: function(response) {
-                    alert('💳 Transaction Successful! Reference code: ' + response.reference);
-                    
-                    // FIXED ACCESS CORRUPTION INLINE ERROR
-                    let matchedUserIndex = db.users.findIndex(u => u.uid === curUser.uid);
-                    if(matchedUserIndex !== -1) {
-                        db.users[matchedUserIndex].coins = (db.users[matchedUserIndex].coins || 0) + coins;
-                        curUser = db.users[matchedUserIndex];
-                    }
-                    
-                    db.totalCoinsProcessed = (db.totalCoinsProcessed || 0) + coins;
+                    curUser.coins += coinQty;
+                    db.totalCoinsProcessed += coinQty;
                     saveState();
                     document.getElementById('user-wallet-balance').innerText = `${curUser.coins} Coins`;
+                    alert(`💎 Allocation verified: ${coinQty} Vivy Live Tokens initialized onto profile vectors!`);
+                    rebuildFeeds();
                 },
-                onClose: function() {
-                    alert('❌ Premium token allocation checkout modal closed prematurely.');
-                }
+                onClose: function() { alert("❌ Core payment transmission checkout pipeline suspended."); }
             });
             handler.openIframe();
         }
 
-        function downloadPayrollCSV() {
-            let csvDataRows = [["Entity Title Tag", "System Role Unit", "Coins Total"]];
-            (db.hosts || []).forEach(h => { csvDataRows.push([h.name, `Host Account`, h.coinsEarned || 0]); });
-            let coreContent = "data:text/csv;charset=utf-8," + csvDataRows.map(r => r.join(",")).join("\n");
-            let uriFormatted = encodeURI(coreContent);
-            let downNode = document.createElement("a");
-            downNode.setAttribute("href", uriFormatted);
-            downNode.setAttribute("download", `Payroll_Report.csv`);
-            document.body.appendChild(downNode);
-            downNode.click();
-            document.body.removeChild(downNode);
-        }
-
-        function rebuildAgencyTalentRegistry() {
-            const body = document.getElementById('agency-host-table-body');
-            if(!body || !curAgency) return;
-            body.innerHTML = '';
-            let accumulated = 0;
-            let relevantHosts = (db.hosts || []).filter(h => h.agencyCode === curAgency.code);
-            relevantHosts.forEach(h => {
-                accumulated += (h.coinsEarned || 0);
-                body.innerHTML += `<tr><td>${h.name}</td><td>${h.uid}</td><td><b>${h.coinsEarned} Coins</b></td></tr>`;
-            });
-            curAgency.totalPerformance = accumulated;
-            document.getElementById('agency-total-balance').innerText = `${accumulated} Coins`;
-            saveState();
-        }
-
-        function clearSystemDatabase() {
-            if(confirm("Wipe storage?")) {
-                localStorage.removeItem('vivylive_db_v2');
-                location.reload();
+        function rebuildFeeds() {
+            let activeFeeds = document.getElementById('global-active-hosts-feed');
+            if(activeFeeds) {
+                activeFeeds.innerHTML = "";
+                if(db.hosts.length === 0) activeFeeds.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem;'>Zero certified structural profiles online.</p>";
+                db.hosts.forEach(h => {
+                    if(h.hardwareBan) return;
+                    let block = document.createElement('div');
+                    block.className = "card";
+                    block.innerHTML = `
+                        <div class='flex-row'>
+                            <div>
+                                <span class="pulse-dot"></span> <b style='font-size:1.1rem; margin-left:4px;'>${h.name}</b><br>
+                                <small style='color:var(--text-muted);'>Affiliation Code: ${h.agencyCode}</small>
+                            </div>
+                            <button class='btn btn-pink btn-sm' onclick='initializeClientCallRequest("${h.uid}")'>🎥 Start Live</button>
+                        </div>
+                    `;
+                    activeFeeds.appendChild(block);
+                });
             }
+
+            let hostFeed = document.getElementById('host-active-users-directory');
+            if(hostFeed) {
+                hostFeed.innerHTML = "";
+                if(db.users.length === 0) hostFeed.innerHTML = "<p style='color:var(--text-muted); font-size:0.85rem;'>Pipeline trace indicates no active tracking client targets currently matching.</p>";
+                db.users.forEach(u => {
+                    let block = document.createElement('div');
+                    block.className = "card";
+                    block.innerHTML = `
+                        <div class='flex-row'>
+                            <div><b>${u.name}</b> <small class='user-id-tag'>${u.uid}</small></div>
+                            <button class='btn btn-green btn-sm' onclick='openMessengerInterface("${u.uid}")'>💬 Open Pipeline Chat</button>
+                        </div>
+                    `;
+                    hostFeed.appendChild(block);
+                });
+            }
+        }
+
+        function initializeClientCallRequest(targetHostUid) {
+            if(!curUser) { alert("❌ Build user account instance before matching with hosts."); return; }
+            if(curUser.coins < 150) { alert("❌ Insufficient funds. System rules necessitate minimum 150 tokens to open lines."); return; }
+            
+            activeTargetUid = targetHostUid;
+            let host = db.hosts.find(h => h.uid === targetHostUid);
+            
+            document.getElementById('call-room-type-title').innerText = `Streaming: ${host.name}`;
+            document.getElementById('video-call-room-modal').style.display = 'flex';
+            
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                .then(stream => {
+                    localMediaStream = stream;
+                    document.getElementById('video-canvas-element').srcObject = stream;
+                }).catch(err => console.log("Stream video access bypassed or disabled dynamically."));
+
+            activeCallSeconds = 0;
+            callTimer = setInterval(() => {
+                activeCallSeconds++;
+                let mins = String(Math.floor(activeCallSeconds / 60)).padStart(2, '0');
+                let secs = String(activeCallSeconds % 60).padStart(2, '0');
+                document.getElementById('call-room-timer').innerText = `Duration: ${mins}:${secs}`;
+                
+                if(activeCallSeconds % 2 === 0) {
+                    if(curUser.coins < 5) {
+                        alert("⚠️ Token reserves depleted completely. Dropping stream.");
+                        terminateCallSession();
+                    } else {
+                        curUser.coins -= 5;
+                        host.coinsEarned += 5;
+                        host.coinsDaily = (host.coinsDaily || 0) + 5;
+                        host.coinsWeekly = (host.coinsWeekly || 0) + 5;
+                        document.getElementById('user-wallet-balance').innerText = `${curUser.coins} Coins`;
+                        saveState();
+                    }
+                }
+            }, 1000);
+        }
+
+        function terminateCallSession() {
+            clearInterval(callTimer);
+            if(localMediaStream) {
+                localMediaStream.getTracks().forEach(t => t.stop());
+            }
+            document.getElementById('video-call-room-modal').style.display = 'none';
+            renderBoardDataView();
+            alert("🎥 Livestream infrastructure context disconnected. Balance logs finalized.");
+        }
+
+        let chatTargetUid = null;
+        function openMessengerInterface(userUid) {
+            chatTargetUid = userUid;
+            let u = db.users.find(usr => usr.uid === userUid);
+            document.getElementById('messenger-target-name').innerText = `Target: ${u.name}`;
+            document.getElementById('host-messenger-modal').style.display = 'flex';
+            refreshChatHistoryUI();
+        }
+
+        function closeMessengerModal() {
+            document.getElementById('host-messenger-modal').style.display = 'none';
+        }
+
+        function refreshChatHistoryUI() {
+            let container = document.getElementById('messenger-chat-history');
+            container.innerHTML = "";
+            let chatKey = [curHost.uid, chatTargetUid].sort().join('_');
+            let record = db.chats[chatKey] || [];
+            record.forEach(msg => {
+                let mDiv = document.createElement('div');
+                mDiv.style.cssText = `margin-bottom:6px; padding:6px 10px; border-radius:8px; max-width:80%; ${msg.sender === curHost.uid ? 'background:var(--accent-green); margin-left:auto;' : 'background:#1E293B;'}`;
+                mDiv.innerHTML = `<div>${msg.text}</div>`;
+                container.appendChild(mDiv);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function dispatchChatMessage() {
+            let txt = document.getElementById('messenger-input-field').value.trim();
+            if(!txt) return;
+            let chatKey = [curHost.uid, chatTargetUid].sort().join('_');
+            if(!db.chats[chatKey]) db.chats[chatKey] = [];
+            db.chats[chatKey].push({ sender: curHost.uid, text: txt, ts: Date.now() });
+            saveState();
+            document.getElementById('messenger-input-field').value = "";
+            refreshChatHistoryUI();
         }
     </script>
 </body>
-                                               </html>
+                        </html>
